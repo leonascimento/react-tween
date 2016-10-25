@@ -1,9 +1,11 @@
 react-tween
 ===
+Tween animation for React components
+
 Usage
 ---
 
-Example: Animate opacity from the previous value to a new value.
+Example: Animate opacity. The specified value is a destination value. The opacity is animated from its current value to the destination value.
 
 ```javascript
 import { Tween } from 'react-tween';

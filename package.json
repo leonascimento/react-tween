@@ -1,10 +1,18 @@
 {
   "name": "react-tween",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": "clari/react-tween",
   "license": "MIT",
   "main": "lib/index",
   "files": ["lib"],
+  "keywords": [
+    "react",
+    "react-component",
+    "animation",
+    "tween",
+    "motion",
+    "transition"
+  ],
   "scripts": {
     "start": "webpack-dev-server",
     "prerelease": "rm -rf lib && babel src --out-dir lib --only tween,index"
