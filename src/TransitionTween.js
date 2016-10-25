@@ -8,6 +8,7 @@ export default class TransitionTween extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
     duration: React.PropTypes.number,
+    easing: React.PropTypes.func,
     sortKey: React.PropTypes.func,
     styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
@@ -16,6 +17,7 @@ export default class TransitionTween extends React.Component {
 
   static defaultProps = {
     duration: 400,
+    easing: easeCubicInOut,
   };
 
   constructor(props) {
@@ -24,7 +26,7 @@ export default class TransitionTween extends React.Component {
     const { styles } = this.props;
 
     this.state = {
-      interpolatedStyles: styles.map(style => ({
+      interpolatedStyles: Immutable.List(styles).map(style => Immutable.Map({
         key: style.key,
         startStyle: style.style,
         currentStyle: style.style,
@@ -35,8 +37,9 @@ export default class TransitionTween extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const styles = Immutable.fromJS(this.state.interpolatedStyles);
-    const nextStyles = Immutable.fromJS(nextProps.styles);
+    const styles = this.state.interpolatedStyles;
+
+    const nextStyles = Immutable.List(nextProps.styles).map(style => Immutable.Map(style));
 
     const extractByKey = styles => styles.reduce((result, style) => result.set(style.get('key'), style), Immutable.Map());
     const extractKeys = styles => styles.map(style => style.get('key')).toSet();
@@ -99,9 +102,7 @@ export default class TransitionTween extends React.Component {
 
     this.startTime = Date.now();
 
-    this.setState({
-      interpolatedStyles: interpolatedStyles.toJS(),
-    });
+    this.setState({ interpolatedStyles });
 
     if (!this.timer) {
       this.timer = timer(() => this.update());
@@ -113,32 +114,29 @@ export default class TransitionTween extends React.Component {
     const { interpolatedStyles } = this.state;
 
     return children(
-      Immutable.List(
-        interpolatedStyles
-          .map(style => ({
-            key: style.key,
-            style: style.currentStyle,
-            data: style.data,
-          }))
-      )
-        .sortBy(style => sortKey(style.key))
+      interpolatedStyles
+        .map(style => ({
+          key: style.get('key'),
+          style: style.get('currentStyle'),
+          data: style.get('data'),
+        }))
+        .sortBy(style => sortKey(style.data))
         .toArray()
     );
   }
 
   update() {
-    const { duration } = this.props;
+    const { duration, easing } = this.props;
     const { interpolatedStyles } = this.state;
 
     const currentTime = Date.now();
     const t = (currentTime - this.startTime) / duration;
     if (t > 0.99) {
       const nextInterpolatedStyles = interpolatedStyles
-        .filter(interpolatedStyle => !interpolatedStyle.removed)
-        .map(interpolatedStyle => ({
-          ...interpolatedStyle,
-          currentStyle: interpolatedStyle.endStyle,
-        }));
+        .filter(interpolatedStyle => !interpolatedStyle.get('removed'))
+        .map(interpolatedStyle => (
+          interpolatedStyle.set('currentStyle', interpolatedStyle.get('endStyle'))
+        ));
 
       this.setState({ interpolatedStyles: nextInterpolatedStyles });
 
@@ -147,12 +145,11 @@ export default class TransitionTween extends React.Component {
       return;
     }
 
-    const easedTime = easeCubicInOut(t);
+    const easedTime = easing(t);
 
-    const nextInterpolatedStyles = interpolatedStyles.map(interpolatedStyle => ({
-      ...interpolatedStyle,
-      currentStyle: interpolate(interpolatedStyle.startStyle, interpolatedStyle.endStyle)(easedTime),
-    }));
+    const nextInterpolatedStyles = interpolatedStyles.map(interpolatedStyle => (
+      interpolatedStyle.set('currentStyle', interpolate(interpolatedStyle.get('startStyle'), interpolatedStyle.get('endStyle'))(easedTime))
+    ));
 
     this.setState({ interpolatedStyles: nextInterpolatedStyles });
   }

@@ -8,11 +8,13 @@ export default class Tween extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
     duration: React.PropTypes.number,
+    easing: React.PropTypes.func,
     style: React.PropTypes.object,
   };
 
   static defaultProps = {
     duration: 400,
+    easing: easeCubicInOut,
   };
 
   constructor(props) {
@@ -42,7 +44,7 @@ export default class Tween extends React.Component {
   }
 
   update() {
-    const { duration, style } = this.props;
+    const { duration, easing, style } = this.props;
 
     const currentTime = Date.now();
     const t = (currentTime - this.startTime) / duration;
@@ -54,7 +56,7 @@ export default class Tween extends React.Component {
       return;
     }
 
-    const easedTime = easeCubicInOut(t);
+    const easedTime = easing(t);
     const interpolatedStyle = interpolate(this.prevStyle, style)(easedTime);
     this.setState({ interpolatedStyle });
   }
