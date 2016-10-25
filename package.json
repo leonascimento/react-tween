@@ -1,4 +1,38 @@
 {
   "name": "react-tween",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "repository": "clari/react-tween",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "classnames": "^2.0.0",
+    "d3": "^3.0.0",
+    "immutable": "^3.0.0",
+    "react-immutable-proptypes": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.0.0",
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-decorators-legacy": "^1.0.0",
+    "babel-polyfill": "^6.0.0",
+    "babel-preset-latest": "^6.0.0",
+    "babel-preset-react": "^6.0.0",
+    "babel-preset-react-hmre": "^1.0.0",
+    "babel-preset-stage-0": "^6.0.0",
+    "css-loader": "^0.25.0",
+    "node-sass": "^3.0.0",
+    "postcss-loader": "^1.0.0",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.0.0",
+    "webpack-dev-server": "^1.0.0"
+  }
 }

@@ -1,0 +1,15 @@
+@import './common';
+
+.example {
+  flex-shrink: 0;
+
+  &:not(:first-child) {
+    margin-top: 20px;
+  }
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+}
