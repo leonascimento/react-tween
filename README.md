@@ -5,7 +5,7 @@ Tween animation for React components
 Usage
 ---
 
-Example: Animate opacity. The specified value is a destination value. The opacity is animated from its current value to the destination value.
+Example: Animate opacity.
 
 ```javascript
 import { Tween } from 'react-tween';
