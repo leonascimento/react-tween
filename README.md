@@ -41,6 +41,19 @@ Example: Specify a delay. This is especially useful for sequencing animations.
 </Tween>
 ```
 
+Example: Specify the easing.
+
+```javascript
+import { easeCubicInOut } from 'd3-ease';
+
+<Tween
+  easing={easeCubicInOut}
+  style={{ opacity }}
+>
+  {/* ... */}
+</Tween>
+```
+
 Example: Animate multiple properties.
 
 ```javascript
@@ -55,7 +68,6 @@ Example: Animate adding or removing segments from a stacked bar.
 import { TransitionTween } from 'react-tween';
 
 <TransitionTween
-  sortKey={bar => bars.map(bar => bar.get('id')).indexOf(bar.get('id'))}
   styles={[
     {
       key: bar.get('id'),

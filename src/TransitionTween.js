@@ -1,6 +1,7 @@
 import { easeCubicInOut } from 'd3-ease';
 import Immutable from 'immutable';
 import { interpolate } from 'd3-interpolate';
+import mergeDiff from './mergeDiff';
 import React from 'react';
 import { timer } from 'd3-timer';
 
@@ -10,7 +11,6 @@ export default class TransitionTween extends React.Component {
     delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
-    sortKey: React.PropTypes.func,
     styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
@@ -44,13 +44,16 @@ export default class TransitionTween extends React.Component {
     const nextStyles = Immutable.List(nextProps.styles).map(style => Immutable.Map(style));
 
     const extractByKey = styles => styles.reduce((result, style) => result.set(style.get('key'), style), Immutable.Map());
-    const extractKeys = styles => styles.map(style => style.get('key')).toSet();
+    const extractKeys = styles => styles.map(style => style.get('key'));
 
     const stylesByKey = extractByKey(styles);
     const nextStylesByKey = extractByKey(nextStyles);
 
-    const styleKeys = extractKeys(styles);
-    const nextStyleKeys = extractKeys(nextStyles);
+    const styleKeysInOrder = extractKeys(styles);
+    const nextStyleKeysInOrder = extractKeys(nextStyles);
+
+    const styleKeys = styleKeysInOrder.toSet();
+    const nextStyleKeys = nextStyleKeysInOrder.toSet();
 
     const added = nextStyleKeys.subtract(styleKeys);
     const removed = styleKeys.subtract(nextStyleKeys);
@@ -59,6 +62,7 @@ export default class TransitionTween extends React.Component {
     const enterStyle = this.props.willEnter();
     const leaveStyle = this.props.willLeave();
 
+    const mergedKeys = mergeDiff(styleKeysInOrder, nextStyleKeysInOrder);
     const interpolatedStyles = Immutable.List()
       .concat(
         added.map(key => {
@@ -100,7 +104,8 @@ export default class TransitionTween extends React.Component {
             data: nextStyle.get('data'),
           });
         })
-      );
+      )
+      .sortBy(interpolatedStyle => mergedKeys.indexOf(interpolatedStyle.get('key')));
 
     this.setState({ interpolatedStyles });
 
@@ -110,7 +115,7 @@ export default class TransitionTween extends React.Component {
   }
 
   render() {
-    const { children, sortKey } = this.props;
+    const { children } = this.props;
     const { interpolatedStyles } = this.state;
 
     return children(
@@ -120,7 +125,6 @@ export default class TransitionTween extends React.Component {
           style: style.get('currentStyle'),
           data: style.get('data'),
         }))
-        .sortBy(style => sortKey(style.data))
         .toArray()
     );
   }
