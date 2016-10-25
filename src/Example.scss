@@ -1,5 +1,11 @@
 @import './common';
 
+.bar {
+  display: flex;
+  flex-direction: column;
+  width: 30px;
+}
+
 .example {
   flex-shrink: 0;
 
@@ -12,4 +18,8 @@
   display: flex;
   flex-direction: column;
   padding: 50px;
+}
+
+.segment {
+  flex-shrink: 0;
 }

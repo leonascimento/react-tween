@@ -1,6 +1,8 @@
-import d3 from 'd3';
+import { easeCubicInOut } from 'd3-ease';
 import Immutable from 'immutable';
+import { interpolate } from 'd3-interpolate';
 import React from 'react';
+import { timer } from 'd3-timer';
 
 export default class Tween extends React.Component {
   static propTypes = {
@@ -16,22 +18,27 @@ export default class Tween extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { interpolatedStyle: null };
+    const { style } = props;
+
+    this.state = { interpolatedStyle: style };
   }
 
   componentWillReceiveProps(nextProps) {
     if (!Immutable.is(Immutable.Map(this.props.style), Immutable.Map(nextProps.style))) {
       this.startTime = Date.now();
-      this.prevStyle = this.props.style;
-      d3.timer(() => this.update());
+      this.prevStyle = this.state.interpolatedStyle;
+
+      if (!this.timer) {
+        this.timer = timer(() => this.update());
+      }
     }
   }
 
   render() {
-    const { children, style } = this.props;
+    const { children } = this.props;
     const { interpolatedStyle } = this.state;
 
-    return children(interpolatedStyle || style);
+    return children(interpolatedStyle);
   }
 
   update() {
@@ -40,13 +47,15 @@ export default class Tween extends React.Component {
     const currentTime = Date.now();
     const t = (currentTime - this.startTime) / duration;
     if (t > 0.99) {
-      this.setState({ interpolatedStyle: null });
-      return true;
+      this.setState({ interpolatedStyle: style });
+
+      this.timer.stop();
+      this.timer = null;
+      return;
     }
 
-    const easedTime = d3.ease('cubic-in-out')(t);
-    const interpolatedStyle = d3.interpolate(this.prevStyle, style)(easedTime);
+    const easedTime = easeCubicInOut(t);
+    const interpolatedStyle = interpolate(this.prevStyle, style)(easedTime);
     this.setState({ interpolatedStyle });
-    return false;
   }
 }
