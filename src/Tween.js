@@ -7,12 +7,14 @@ import { timer } from 'd3-timer';
 export default class Tween extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
+    delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
     style: React.PropTypes.object,
   };
 
   static defaultProps = {
+    delay: 0,
     duration: 400,
     easing: easeCubicInOut,
   };
@@ -27,11 +29,10 @@ export default class Tween extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (!Immutable.is(Immutable.Map(this.props.style), Immutable.Map(nextProps.style))) {
-      this.startTime = Date.now();
       this.prevStyle = this.state.interpolatedStyle;
 
       if (!this.timer) {
-        this.timer = timer(() => this.update());
+        this.timer = timer(elapsed => this.update(elapsed), nextProps.delay);
       }
     }
   }
@@ -43,11 +44,10 @@ export default class Tween extends React.Component {
     return children(interpolatedStyle);
   }
 
-  update() {
+  update(elapsed) {
     const { duration, easing, style } = this.props;
 
-    const currentTime = Date.now();
-    const t = (currentTime - this.startTime) / duration;
+    const t = elapsed / duration;
     if (t > 0.99) {
       this.setState({ interpolatedStyle: style });
 

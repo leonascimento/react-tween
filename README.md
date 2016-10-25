@@ -5,7 +5,7 @@ Tween animation for React components
 Usage
 ---
 
-Example: Animate opacity.
+Example: Animate opacity. The style contains the value to animate to.
 
 ```javascript
 import { Tween } from 'react-tween';
@@ -24,6 +24,17 @@ Example: Specify the animation duration.
 ```javascript
 <Tween
   duration={400}
+  style={{ opacity }}
+>
+  {/* ... */}
+</Tween>
+```
+
+Example: Specify a delay. This is especially useful for sequencing animations.
+
+```javascript
+<Tween
+  delay={500}
   style={{ opacity }}
 >
   {/* ... */}

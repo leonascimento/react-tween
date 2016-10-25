@@ -7,6 +7,7 @@ import { timer } from 'd3-timer';
 export default class TransitionTween extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
+    delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
     sortKey: React.PropTypes.func,
@@ -16,6 +17,7 @@ export default class TransitionTween extends React.Component {
   };
 
   static defaultProps = {
+    delay: 0,
     duration: 400,
     easing: easeCubicInOut,
   };
@@ -100,12 +102,10 @@ export default class TransitionTween extends React.Component {
         })
       );
 
-    this.startTime = Date.now();
-
     this.setState({ interpolatedStyles });
 
     if (!this.timer) {
-      this.timer = timer(() => this.update());
+      this.timer = timer(elapsed => this.update(elapsed), nextProps.delay);
     }
   }
 
@@ -125,12 +125,11 @@ export default class TransitionTween extends React.Component {
     );
   }
 
-  update() {
+  update(elapsed) {
     const { duration, easing } = this.props;
     const { interpolatedStyles } = this.state;
 
-    const currentTime = Date.now();
-    const t = (currentTime - this.startTime) / duration;
+    const t = elapsed / duration;
     if (t > 0.99) {
       const nextInterpolatedStyles = interpolatedStyles
         .filter(interpolatedStyle => !interpolatedStyle.get('removed'))
