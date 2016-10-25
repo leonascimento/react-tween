@@ -39,9 +39,10 @@ Example: Animate multiple properties.
 Example: Animate adding or removing segments from a stacked bar.
 
 ```javascript
-import { Tween } from 'react-tween';
+import { TransitionTween } from 'react-tween';
 
 <TransitionTween
+  sortKey={key => bars.map(bar => bar.get('id')).indexOf(key)}
   styles={[
     {
       key: bar.get('id'),
