@@ -1,6 +1,6 @@
 {
   "name": "react-tween",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "start": "webpack-dev-server",
-    "prerelease": "rm -rf lib && babel src --out-dir lib --only tween,index"
+    "prepublish": "rm -rf lib && babel src --out-dir lib --only tween,index"
   },
   "dependencies": {
     "classnames": "^2.0.0",
