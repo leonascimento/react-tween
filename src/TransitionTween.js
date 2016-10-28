@@ -1,7 +1,9 @@
+import difference from 'lodash/difference';
 import { easeCubicInOut } from 'd3-ease';
-import Immutable from 'immutable';
 import { interpolate } from 'd3-interpolate';
+import intersection from 'lodash/intersection';
 import React from 'react';
+import sortBy from 'lodash/sortBy';
 import { timer } from 'd3-timer';
 
 export default class TransitionTween extends React.Component {
@@ -25,144 +27,142 @@ export default class TransitionTween extends React.Component {
   constructor(props) {
     super(props);
 
-    const { sortKey, styles } = this.props;
-
     this.state = {
-      interpolatedStyles: Immutable.List(styles)
-        .map(style => Immutable.Map({
-          key: style.key,
-          startStyle: style.style,
-          currentStyle: style.style,
-          endStyle: style.style,
-          data: style.data,
-        }))
-        .sortBy(style => sortKey(style.get('data'))),
+      styles: this.extractAnimatedStyles(props.styles),
     };
+
+    this.timer = null;
   }
 
   componentWillReceiveProps(nextProps) {
-    const styles = this.state.interpolatedStyles;
+    // Animation is kicked off when props are received.
+    // Multiple kickoffs halt and resume the animation from the current state.
 
-    const nextStyles = Immutable.List(nextProps.styles).map(style => Immutable.Map(style));
+    const extractStylesByKey = styles => styles.reduce((result, style) => {
+      result[style.key] = style;
+      return result;
+    }, {});
 
-    const extractByKey = styles => styles.reduce((result, style) => result.set(style.get('key'), style), Immutable.Map());
-    const extractKeys = styles => styles.map(style => style.get('key'));
+    const stylesByKey = extractStylesByKey(this.state.styles);
+    const nextStylesByKey = extractStylesByKey(nextProps.styles);
 
-    const stylesByKey = extractByKey(styles);
-    const nextStylesByKey = extractByKey(nextStyles);
+    const keys = Object.keys(stylesByKey);
+    const nextKeys = Object.keys(nextStylesByKey);
 
-    const styleKeysInOrder = extractKeys(styles);
-    const nextStyleKeysInOrder = extractKeys(nextStyles);
+    const added = difference(nextKeys, keys);
+    const removed = difference(keys, nextKeys);
+    const shared = intersection(keys, nextKeys);
 
-    const styleKeys = styleKeysInOrder.toSet();
-    const nextStyleKeys = nextStyleKeysInOrder.toSet();
+    const generateEnterStyle = k => nextProps.willEnter ? nextProps.willEnter() : nextStylesByKey[k].style;
+    const generateLeaveStyle = k => nextProps.willLeave ? nextProps.willLeave() : stylesByKey[k].style;
 
-    const added = nextStyleKeys.subtract(styleKeys);
-    const removed = styleKeys.subtract(nextStyleKeys);
-    const existing = styleKeys.intersect(nextStyleKeys);
-
-    const enterStyle = this.props.willEnter();
-    const leaveStyle = this.props.willLeave();
-
-    const interpolatedStyles = Immutable.List()
+    const styles = []
       .concat(
-        added.map(key => {
-          const nextStyle = nextStylesByKey.get(key);
-
-          return Immutable.Map({
-            key,
-            startStyle: enterStyle,
-            currentStyle: enterStyle,
-            endStyle: nextStyle.get('style'),
-            data: nextStyle.get('data'),
-          });
-        })
+        added.map(k => ({
+          key: k,
+          startStyle: generateEnterStyle(k),
+          currentStyle: generateEnterStyle(k),
+          endStyle: nextStylesByKey[k].style,
+          data: nextStylesByKey[k].data,
+        }))
       )
       .concat(
-        removed.map(key => {
-          const style = stylesByKey.get(key);
-
-          return Immutable.Map({
-            key,
-            startStyle: style.get('currentStyle'),
-            currentStyle: style.get('currentStyle'),
-            endStyle: leaveStyle,
-            data: style.get('data'),
-            removed: true,
-          });
-        })
+        removed.map(k => ({
+          key: k,
+          startStyle: stylesByKey[k].currentStyle,
+          currentStyle: stylesByKey[k].currentStyle,
+          endStyle: generateLeaveStyle(k),
+          data: stylesByKey[k].data,
+          removed: true,
+        }))
       )
       .concat(
-        existing.map(key => {
-          const style = stylesByKey.get(key);
-          const nextStyle = nextStylesByKey.get(key);
+        shared.map(k => ({
+          key: k,
+          startStyle: stylesByKey[k].currentStyle,
+          currentStyle: stylesByKey[k].currentStyle,
+          endStyle: nextStylesByKey[k].style,
+          data: nextStylesByKey[k].data,
+        }))
+      );
 
-          return Immutable.Map({
-            key,
-            startStyle: style.get('currentStyle'),
-            currentStyle: style.get('currentStyle'),
-            endStyle: nextStyle.get('style'),
-            data: nextStyle.get('data'),
-          });
-        })
-      )
-      .sortBy(interpolatedStyle => this.props.sortKey(interpolatedStyle.get('data')));
+    const sortedStyles = nextProps.sortKey ?
+      sortBy(styles, style => nextProps.sortKey(style.data)) :
+      styles;
 
-    this.setState({ interpolatedStyles });
+    this.setState({ styles: sortedStyles });
 
-    if (!this.timer) {
-      this.timer = timer(elapsed => this.update(elapsed), nextProps.delay);
-    }
+    this.startTimer();
   }
 
   componentWillUnmount() {
-    this.stop();
+    // Prevent the timer callback from updating an unmounted component.
+    this.stopTimerIfStarted();
+  }
+
+  extractAnimatedStyles(styles) {
+    return styles.map(style => ({
+      key: style.key,
+      startStyle: style.style,
+      currentStyle: style.style,
+      endStyle: style.style,
+      data: style.data,
+    }));
   }
 
   render() {
     const { children } = this.props;
-    const { interpolatedStyles } = this.state;
+    const { styles } = this.state;
 
-    return children(
-      interpolatedStyles
-        .map(style => ({
-          key: style.get('key'),
-          style: style.get('currentStyle'),
-          data: style.get('data'),
-        }))
-        .toArray()
-    );
+    return children(styles.map(style => ({
+      key: style.key,
+      style: style.currentStyle,
+      data: style.data,
+    })));
   }
 
-  stop() {
+  startTimer() {
+    const { delay } = this.props;
+
+    this.stopTimerIfStarted();
+    this.timer = timer(elapsed => this.updateFromTimer(elapsed), delay);
+  }
+
+  stopTimer() {
     this.timer.stop();
     this.timer = null;
   }
 
-  update(elapsed) {
+  stopTimerIfStarted() {
+    if (this.timer) {
+      this.stopTimer();
+    }
+  }
+
+  updateFromTimer(elapsed) {
     const { duration, easing } = this.props;
-    const { interpolatedStyles } = this.state;
 
     const t = elapsed / duration;
     if (t > 0.99) {
-      const nextInterpolatedStyles = interpolatedStyles
-        .filter(interpolatedStyle => !interpolatedStyle.get('removed'))
-        .map(interpolatedStyle => (
-          interpolatedStyle.set('currentStyle', interpolatedStyle.get('endStyle'))
-        ));
+      const styles = this.state.styles
+        .filter(style => !style.removed)
+        .map(style => ({
+          ...style,
+          startStyle: style.endStyle,
+          currentStyle: style.endStyle,
+        }));
 
-      this.setState({ interpolatedStyles: nextInterpolatedStyles });
+      this.setState({ styles });
 
-      this.stop();
+      this.stopTimer();
       return;
     }
 
-    const easedTime = easing(t);
+    const styles = this.state.styles.map(style => ({
+      ...style,
+      currentStyle: interpolate(style.startStyle, style.endStyle)(easing(t)),
+    }));
 
-    const nextInterpolatedStyles = interpolatedStyles.map(interpolatedStyle => (
-      interpolatedStyle.set('currentStyle', interpolate(interpolatedStyle.get('startStyle'), interpolatedStyle.get('endStyle'))(easedTime))
-    ));
-
-    this.setState({ interpolatedStyles: nextInterpolatedStyles });
+    this.setState({ styles });
   }
 }

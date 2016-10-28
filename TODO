@@ -1,4 +1,1 @@
 - mergeDiff
-- Clean up TransitionTween.componentWillReceiveProps
-- Detect when to kick off transition animation (key added or removed, style change)
-- Style change note: We are comparing the animated value from the current props (currentStyle) to the destination value from nextProps (style).

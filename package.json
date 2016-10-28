@@ -1,11 +1,13 @@
 {
   "name": "react-tween",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
   "main": "lib/index",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "react",
     "react-component",
@@ -19,12 +21,10 @@
     "prepublish": "rm -rf lib && babel src --out-dir lib --only tween,index"
   },
   "dependencies": {
-    "classnames": "^2.0.0",
     "d3-ease": "^1.0.0",
     "d3-interpolate": "^1.0.0",
     "d3-timer": "^1.0.0",
-    "immutable": "^3.0.0",
-    "react-immutable-proptypes": "^2.0.0"
+    "lodash": "^4.0.0"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0"
