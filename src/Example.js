@@ -1,4 +1,4 @@
-import range from 'lodash/range';
+import range from 'lodash.range';
 import React from 'react';
 import { scaleOrdinal, schemeCategory20 } from 'd3-scale';
 import TransitionTween from './TransitionTween';

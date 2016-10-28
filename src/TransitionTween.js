@@ -1,9 +1,9 @@
-import difference from 'lodash/difference';
+import difference from 'lodash.difference';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
-import intersection from 'lodash/intersection';
+import intersection from 'lodash.intersection';
 import React from 'react';
-import sortBy from 'lodash/sortBy';
+import sortBy from 'lodash.sortby';
 import { timer } from 'd3-timer';
 
 export default class TransitionTween extends React.Component {

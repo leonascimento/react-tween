@@ -1,6 +1,6 @@
 {
   "name": "react-tween",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
@@ -24,7 +24,9 @@
     "d3-ease": "^1.0.0",
     "d3-interpolate": "^1.0.0",
     "d3-timer": "^1.0.0",
-    "lodash": "^4.0.0"
+    "lodash.difference": "^4.0.0",
+    "lodash.intersection": "^4.0.0",
+    "lodash.sortby": "^4.0.0"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0"
@@ -42,6 +44,7 @@
     "babel-preset-stage-0": "^6.0.0",
     "css-loader": "^0.25.0",
     "d3-scale": "^1.0.0",
+    "lodash.range": "^3.0.0",
     "node-sass": "^3.0.0",
     "postcss-loader": "^1.0.0",
     "react": "^15.0.0",
