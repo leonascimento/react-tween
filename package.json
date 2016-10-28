@@ -1,11 +1,12 @@
 {
   "name": "react-tween",
-  "version": "0.1.10",
+  "version": "0.1.10-1",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
   "main": "lib/index",
   "files": [
+    "dist",
     "lib"
   ],
   "keywords": [
@@ -17,8 +18,9 @@
     "transition"
   ],
   "scripts": {
-    "start": "webpack-dev-server",
-    "prepublish": "rm -rf lib && babel src --out-dir lib --only tween,index"
+    "start": "webpack-dev-server --config webpack.dev.config.js",
+    "build": "rm -rf dist && webpack --config webpack.build.config.js",
+    "prepublish": "rm -rf lib && babel src --out-dir lib --only tween,index && npm run build"
   },
   "dependencies": {
     "d3-ease": "^1.0.0",
