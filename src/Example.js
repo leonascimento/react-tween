@@ -8,11 +8,19 @@ export default class Example extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { counter: 0 };
+    this.state = {
+      counter: 0,
+      delay: false,
+      long: false,
+      tweenType: 'tween',
+    };
   }
 
   render() {
-    const { counter } = this.state;
+    const { counter, long, tweenType } = this.state;
+
+    const delay = this.state.delay ? 2000 : 0;
+    const duration = long ? 5000 : 400;
 
     const data = range(5).map(i => ({ key: i.toString(), value: i }));
     const filteredData = data.filter(d => ((counter % 2 === 0) ? true : (d.value % 2 === 1)));
@@ -33,11 +41,64 @@ export default class Example extends React.Component {
 
     return (
       <div
-        onClick={() => this.setState({ counter: counter + 1 })}
         style={{ userSelect: 'none' }}
         {...this.props}
       >
-        <Tween
+        <div>
+          <button
+            onClick={() => this.setState({ counter: counter + 1 })}
+            type="button"
+          >
+            Next
+          </button>
+        </div>
+        <div>
+          <div>
+            <label>
+              <input
+                checked={tweenType === 'tween'}
+                onChange={e => this.setState({ tweenType: e.currentTarget.value })}
+                type="radio"
+                value="tween"
+              />
+              Tween
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                checked={tweenType === 'transition-tween'}
+                onChange={e => this.setState({ tweenType: e.currentTarget.value })}
+                type="radio"
+                value="transition-tween"
+              />
+              Transition Tween
+            </label>
+          </div>
+        </div>
+        <div>
+          <label>
+            <input
+              checked={this.state.delay}
+              onChange={() => this.setState({ delay: !this.state.delay })}
+              type="checkbox"
+            />
+            Delayed
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              checked={long}
+              onChange={() => this.setState({ long: !long })}
+              type="checkbox"
+            />
+            Long
+          </label>
+        </div>
+        {tweenType === 'tween' && <Tween
+          delay={delay}
+          duration={duration}
           style={{ color: (counter % 2 === 0) ? 'blue' : 'orange' }}
         >
           {style => (
@@ -47,8 +108,10 @@ export default class Example extends React.Component {
               Hello, Tween!
             </div>
           )}
-        </Tween>
-        <TransitionTween
+        </Tween>}
+        {tweenType === 'transition-tween' && <TransitionTween
+          delay={delay}
+          duration={duration}
           sortKey={d => d.key}
           styles={styles}
           willEnter={() => ({ color: 'blue', height: 0 })}
@@ -82,7 +145,7 @@ export default class Example extends React.Component {
               </div>
             </div>
           )}
-        </TransitionTween>
+        </TransitionTween>}
       </div>
     );
   }
