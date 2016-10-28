@@ -3,10 +3,11 @@ react-tween
 Tween animation for React components
 
 Examples
-- Simple example: Opacity
-- Simple example: Delay
-- Simple example: Duration
-- Simple example: Multiple properties
-- Simple example: Custom easing
-- Bar chart with bar height animation
-- Bar chart with staggered bar height animation
+- Tween: Opacity
+- Tween: Delay
+- Tween: Duration
+- Tween: Multiple properties
+- Tween: Custom easing
+- TransitionTween: Animate bar heights
+- TransitionTween: Stagger bar height animation
+- TransitionTween: Add and remove bars
