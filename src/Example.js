@@ -12,6 +12,7 @@ export default class Example extends React.Component {
       counter: 0,
       delay: false,
       long: false,
+      stagger: false,
       tweenType: 'tween',
     };
   }
@@ -19,8 +20,9 @@ export default class Example extends React.Component {
   render() {
     const { counter, long, tweenType } = this.state;
 
-    const delay = this.state.delay ? 2000 : 0;
-    const duration = long ? 5000 : 400;
+    const delay = this.state.delay ? 1000 : 0;
+    const duration = long ? 1000 : 400;
+    const stagger = this.state.stagger ? 200 : 0;
 
     const data = range(5).map(i => ({ key: i.toString(), value: i }));
     const filteredData = data.filter(d => ((counter % 2 === 0) ? true : (d.value % 2 === 1)));
@@ -89,6 +91,16 @@ export default class Example extends React.Component {
         <div>
           <label>
             <input
+              checked={this.state.stagger}
+              onChange={() => this.setState({ stagger: !this.state.stagger })}
+              type="checkbox"
+            />
+            Staggered
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
               checked={long}
               onChange={() => this.setState({ long: !long })}
               type="checkbox"
@@ -113,6 +125,7 @@ export default class Example extends React.Component {
           delay={delay}
           duration={duration}
           sortKey={d => d.key}
+          stagger={stagger}
           styles={styles}
           willEnter={() => ({ color: 'blue', height: 0 })}
           willLeave={() => ({ color: 'orange', height: 0 })}

@@ -1,3 +1,4 @@
+import clamp from 'lodash.clamp';
 import difference from 'lodash.difference';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
@@ -13,6 +14,7 @@ export default class TransitionTween extends React.Component {
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
     sortKey: React.PropTypes.func,
+    stagger: React.PropTypes.number,
     styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
@@ -22,6 +24,7 @@ export default class TransitionTween extends React.Component {
     delay: 0,
     duration: 400,
     easing: easeCubicInOut,
+    stagger: 0,
   };
 
   constructor(props) {
@@ -140,10 +143,11 @@ export default class TransitionTween extends React.Component {
   }
 
   updateFromTimer(elapsed) {
-    const { duration, easing } = this.props;
+    const { duration, easing, stagger } = this.props;
 
-    const t = elapsed / duration;
-    if (t > 0.99) {
+    const fullDuration = duration + stagger * (this.state.styles.length - 1);
+
+    if (elapsed / fullDuration > 0.99) {
       const styles = this.state.styles
         .filter(style => !style.removed)
         .map(style => ({
@@ -158,10 +162,14 @@ export default class TransitionTween extends React.Component {
       return;
     }
 
-    const styles = this.state.styles.map(style => ({
-      ...style,
-      currentStyle: interpolate(style.startStyle, style.endStyle)(easing(t)),
-    }));
+    const styles = this.state.styles.map((style, i) => {
+      const staggeredTime = clamp((elapsed - (stagger * i)) / duration, 0, 1);
+
+      return {
+        ...style,
+        currentStyle: interpolate(style.startStyle, style.endStyle)(easing(staggeredTime)),
+      };
+    });
 
     this.setState({ styles });
   }
