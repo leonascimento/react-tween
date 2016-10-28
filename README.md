@@ -68,6 +68,7 @@ Example: Animate adding or removing segments from a stacked bar.
 import { TransitionTween } from 'react-tween';
 
 <TransitionTween
+  sortKey={data => bars.findIndex(bar => bar.get('id') === data.get('id'))}
   styles={[
     {
       key: bar.get('id'),

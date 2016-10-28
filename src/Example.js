@@ -44,6 +44,7 @@ export default class Example extends React.Component {
         <div className={styles.example}>
           <TransitionTween
             duration={1000}
+            sortKey={data => bars.findIndex(bar => bar.get('id') === data.get('id'))}
             styles={bars
               .filter(bar => visibleBars.has(bar.get('id')))
               .map(bar => ({

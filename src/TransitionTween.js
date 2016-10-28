@@ -1,7 +1,6 @@
 import { easeCubicInOut } from 'd3-ease';
 import Immutable from 'immutable';
 import { interpolate } from 'd3-interpolate';
-import mergeDiff from './mergeDiff';
 import React from 'react';
 import { timer } from 'd3-timer';
 
@@ -11,6 +10,7 @@ export default class TransitionTween extends React.Component {
     delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
+    sortKey: React.PropTypes.func,
     styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
@@ -25,16 +25,18 @@ export default class TransitionTween extends React.Component {
   constructor(props) {
     super(props);
 
-    const { styles } = this.props;
+    const { sortKey, styles } = this.props;
 
     this.state = {
-      interpolatedStyles: Immutable.List(styles).map(style => Immutable.Map({
-        key: style.key,
-        startStyle: style.style,
-        currentStyle: style.style,
-        endStyle: style.style,
-        data: style.data,
-      })),
+      interpolatedStyles: Immutable.List(styles)
+        .map(style => Immutable.Map({
+          key: style.key,
+          startStyle: style.style,
+          currentStyle: style.style,
+          endStyle: style.style,
+          data: style.data,
+        }))
+        .sortBy(style => sortKey(style.get('data'))),
     };
   }
 
@@ -62,7 +64,6 @@ export default class TransitionTween extends React.Component {
     const enterStyle = this.props.willEnter();
     const leaveStyle = this.props.willLeave();
 
-    const mergedKeys = mergeDiff(styleKeysInOrder, nextStyleKeysInOrder);
     const interpolatedStyles = Immutable.List()
       .concat(
         added.map(key => {
@@ -105,13 +106,17 @@ export default class TransitionTween extends React.Component {
           });
         })
       )
-      .sortBy(interpolatedStyle => mergedKeys.indexOf(interpolatedStyle.get('key')));
+      .sortBy(interpolatedStyle => this.props.sortKey(interpolatedStyle.get('data')));
 
     this.setState({ interpolatedStyles });
 
     if (!this.timer) {
       this.timer = timer(elapsed => this.update(elapsed), nextProps.delay);
     }
+  }
+
+  componentWillUnmount() {
+    this.stop();
   }
 
   render() {
@@ -129,6 +134,11 @@ export default class TransitionTween extends React.Component {
     );
   }
 
+  stop() {
+    this.timer.stop();
+    this.timer = null;
+  }
+
   update(elapsed) {
     const { duration, easing } = this.props;
     const { interpolatedStyles } = this.state;
@@ -143,8 +153,7 @@ export default class TransitionTween extends React.Component {
 
       this.setState({ interpolatedStyles: nextInterpolatedStyles });
 
-      this.timer.stop();
-      this.timer = null;
+      this.stop();
       return;
     }
 

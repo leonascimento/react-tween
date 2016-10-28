@@ -37,11 +37,20 @@ export default class Tween extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.stop();
+  }
+
   render() {
     const { children } = this.props;
     const { interpolatedStyle } = this.state;
 
     return children(interpolatedStyle);
+  }
+
+  stop() {
+    this.timer.stop();
+    this.timer = null;
   }
 
   update(elapsed) {
@@ -51,8 +60,7 @@ export default class Tween extends React.Component {
     if (t > 0.99) {
       this.setState({ interpolatedStyle: style });
 
-      this.timer.stop();
-      this.timer = null;
+      this.stop();
       return;
     }
 
