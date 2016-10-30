@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import ClickableExample from './ClickableExample';
-import range from 'lodash.range';
 import React from 'react';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import styles from './Example.scss';
@@ -39,16 +38,20 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => {
           const data = flag ?
-            range(5)
-              .map(i => ({
-                index: 2 * i,
-                value: 50 + 100 * (i > 2 ? 4 - i : i)
-              }))
-            : range(9)
-              .map(i => ({
-                index: i,
-                value: 50 + 25 * i,
-              }));
+            [
+              { index: 0, value: 50 },
+              { index: 2, value: 100 },
+              { index: 3, value: 150 },
+              { index: 4, value: 125 },
+              { index: 6, value: 100 },
+            ] :
+            [
+              { index: 0, value: 50 },
+              { index: 1, value: 75 },
+              { index: 2, value: 100 },
+              { index: 5, value: 125 },
+              { index: 6, value: 150 },
+            ];
 
           const barScale = scaleBand()
             .domain(data.map(d => d.index))
