@@ -29,9 +29,6 @@ import { TransitionTween, Tween } from 'react-tween';
 
 // TransitionTween takes the place of TransitionGroup.
 <TransitionTween
-  // The sortKey prop defines the order of the items in the list. It is a
-  // function of the item data.
-  sortKey={d => d}
   styles={[
     {
       // The key is the child component key.
@@ -84,7 +81,8 @@ import { easeSinInOut } from 'd3-ease';
 
 Implementation
 ---
-- The API is based off of [react-motion](https://github.com/chenglou/react-motion).
+- The API is based on [react-motion](https://github.com/chenglou/react-motion).
+- `mergeDiff` (for ordering `TransitionTween` items) is essentially `mergeDiff` from `react-motion`.
 - The animation is implemented using d3's interpolation, easing, and timer. Any value d3 can interpolate, `react-tween` can interpolate.
 
 Comparison to `react-motion`

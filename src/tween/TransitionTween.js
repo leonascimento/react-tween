@@ -1,10 +1,7 @@
-import clamp from 'lodash.clamp';
-import difference from 'lodash.difference';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
-import intersection from 'lodash.intersection';
+import mergeDiff from './mergeDiff';
 import React from 'react';
-import sortBy from 'lodash.sortby';
 import { timer } from 'd3-timer';
 
 export default class TransitionTween extends React.Component {
@@ -13,8 +10,6 @@ export default class TransitionTween extends React.Component {
     delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
-    sortKey: React.PropTypes.func,
-    stagger: React.PropTypes.number,
     styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
@@ -24,7 +19,6 @@ export default class TransitionTween extends React.Component {
     delay: 0,
     duration: 400,
     easing: easeCubicInOut,
-    stagger: 0,
     willEnter: () => ({}),
     willLeave: () => ({}),
   };
@@ -32,9 +26,15 @@ export default class TransitionTween extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      styles: this.extractAnimatedStyles(props.styles),
-    };
+    const styles = props.styles.map(style => ({
+      key: style.key,
+      startStyle: style.style,
+      currentStyle: style.style,
+      endStyle: style.style,
+      data: style.data,
+    }));
+
+    this.state = { styles };
 
     this.timer = null;
   }
@@ -53,10 +53,7 @@ export default class TransitionTween extends React.Component {
 
     const keys = Object.keys(stylesByKey);
     const nextKeys = Object.keys(nextStylesByKey);
-
-    const added = difference(nextKeys, keys);
-    const removed = difference(keys, nextKeys);
-    const shared = intersection(keys, nextKeys);
+    const mergedKeys = mergeDiff(keys, nextKeys);
 
     const generateEnterStyle = k => ({
       ...nextStylesByKey[k].style,
@@ -67,41 +64,39 @@ export default class TransitionTween extends React.Component {
       ...nextProps.willLeave(),
     });
 
-    const styles = []
-      .concat(
-        added.map(k => ({
+    const styles = mergedKeys.map(k => {
+      if (stylesByKey.hasOwnProperty(k) && nextStylesByKey.hasOwnProperty(k)) {
+        // key is shared by current and next styles
+        return {
+          key: k,
+          startStyle: stylesByKey[k].currentStyle,
+          currentStyle: stylesByKey[k].currentStyle,
+          endStyle: nextStylesByKey[k].style,
+          data: nextStylesByKey[k].data,
+        };
+      } else if (nextStylesByKey.hasOwnProperty(k)) {
+        // key is added
+        return {
           key: k,
           startStyle: generateEnterStyle(k),
           currentStyle: generateEnterStyle(k),
           endStyle: nextStylesByKey[k].style,
           data: nextStylesByKey[k].data,
-        }))
-      )
-      .concat(
-        removed.map(k => ({
+        };
+      } else {
+        // key is removed
+        return {
           key: k,
           startStyle: stylesByKey[k].currentStyle,
           currentStyle: stylesByKey[k].currentStyle,
           endStyle: generateLeaveStyle(k),
           data: stylesByKey[k].data,
           removed: true,
-        }))
-      )
-      .concat(
-        shared.map(k => ({
-          key: k,
-          startStyle: stylesByKey[k].currentStyle,
-          currentStyle: stylesByKey[k].currentStyle,
-          endStyle: nextStylesByKey[k].style,
-          data: nextStylesByKey[k].data,
-        }))
-      );
+        };
+      }
+    });
 
-    const sortedStyles = nextProps.sortKey ?
-      sortBy(styles, style => nextProps.sortKey(style.data)) :
-      styles;
-
-    this.setState({ styles: sortedStyles });
+    this.setState({ styles });
 
     this.startTimer();
   }
@@ -111,18 +106,8 @@ export default class TransitionTween extends React.Component {
     this.stopTimerIfStarted();
   }
 
-  extractAnimatedStyles(styles) {
-    return styles.map(style => ({
-      key: style.key,
-      startStyle: style.style,
-      currentStyle: style.style,
-      endStyle: style.style,
-      data: style.data,
-    }));
-  }
-
   render() {
-    const { children, delay, duration, easing, sortKey, stagger, styles: stylesProp, willEnter, willLeave, ...props } = this.props;
+    const { children, delay, duration, easing, styles: stylesProp, willEnter, willLeave, ...props } = this.props;
     const { styles } = this.state;
 
     return React.cloneElement(children(styles.map(style => ({
@@ -151,11 +136,10 @@ export default class TransitionTween extends React.Component {
   }
 
   updateFromTimer(elapsed) {
-    const { duration, easing, stagger } = this.props;
+    const { duration, easing } = this.props;
 
-    const fullDuration = duration + stagger * (this.state.styles.length - 1);
-
-    if (elapsed / fullDuration > 0.99) {
+    const t = elapsed / duration;
+    if (t > 0.99) {
       const styles = this.state.styles
         .filter(style => !style.removed)
         .map(style => ({
@@ -170,12 +154,10 @@ export default class TransitionTween extends React.Component {
       return;
     }
 
-    const styles = this.state.styles.map((style, i) => {
-      const staggeredTime = clamp((elapsed - (stagger * i)) / duration, 0, 1);
-
+    const styles = this.state.styles.map(style => {
       return {
         ...style,
-        currentStyle: interpolate(style.startStyle, style.endStyle)(easing(staggeredTime)),
+        currentStyle: interpolate(style.startStyle, style.endStyle)(easing(t)),
       };
     });
 

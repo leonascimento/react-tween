@@ -57,7 +57,6 @@ export default function Example({ className, ...props }) {
 
           return (
             <TransitionTween
-              sortKey={d => d}
               styles={data
                 .map(d => ({
                   key: d.index.toString(),
