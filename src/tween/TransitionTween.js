@@ -25,6 +25,8 @@ export default class TransitionTween extends React.Component {
     duration: 400,
     easing: easeCubicInOut,
     stagger: 0,
+    willEnter: () => ({}),
+    willLeave: () => ({}),
   };
 
   constructor(props) {
@@ -56,8 +58,14 @@ export default class TransitionTween extends React.Component {
     const removed = difference(keys, nextKeys);
     const shared = intersection(keys, nextKeys);
 
-    const generateEnterStyle = k => nextProps.willEnter ? nextProps.willEnter() : nextStylesByKey[k].style;
-    const generateLeaveStyle = k => nextProps.willLeave ? nextProps.willLeave() : stylesByKey[k].style;
+    const generateEnterStyle = k => ({
+      ...nextStylesByKey[k].style,
+      ...nextProps.willEnter(),
+    });
+    const generateLeaveStyle = k => ({
+      ...stylesByKey[k].currentStyle,
+      ...nextProps.willLeave(),
+    });
 
     const styles = []
       .concat(
@@ -114,14 +122,14 @@ export default class TransitionTween extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, styles: stylesProp, ...props } = this.props;
     const { styles } = this.state;
 
-    return children(styles.map(style => ({
+    return React.cloneElement(children(styles.map(style => ({
       key: style.key,
       style: style.currentStyle,
       data: style.data,
-    })));
+    }))), props);
   }
 
   startTimer() {

@@ -1,2 +1,2 @@
-export TransitionTween from './TransitionTween';
-export Tween from './Tween';
+export TransitionTween from './tween/TransitionTween';
+export Tween from './tween/Tween';

@@ -1,0 +1,12 @@
+:local(.example) {
+  flex-shrink: 0;
+
+  &:not(:first-child) {
+    margin-left: 50px;
+  }
+}
+
+:local(.examples) {
+  display: flex;
+  margin: 50px;
+}
