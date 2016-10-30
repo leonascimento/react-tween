@@ -1,5 +1,5 @@
 export default function mergeDiff(keys, nextKeys) {
-  // Create a lookup table from key to index
+  // Create lookup tables from key to index
   const extractIndexes = keys => (
     keys.reduce((result, k, i) => {
       result[k] = i;
