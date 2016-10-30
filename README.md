@@ -5,7 +5,7 @@ Tween animation for React components
 Demos
 ---
 - [Animate opacity and color with `<Tween />`](http://codepen.io/mking-clari/pen/JRqzLN)
-- Animate avatars with `<TransitionTween />`
+- [Animate bars with `<TransitionTween />`](http://codepen.io/mking-clari/pen/yadomz)
 
 Usage
 ---
