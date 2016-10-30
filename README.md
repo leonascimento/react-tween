@@ -17,7 +17,8 @@ import { TransitionTween, Tween } from 'react-tween';
 
 // Tween is declarative.
 // The style defines the destination value.
-// Whenever the destination value changes, the style is animated to that destination value.
+// Whenever the destination value changes, the style is animated to that
+// destination value.
 <Tween style={{ opacity: 1 }}>
   {style => (
     <div style={{ opacity: style.opacity }}>
@@ -28,7 +29,8 @@ import { TransitionTween, Tween } from 'react-tween';
 
 // TransitionTween takes the place of TransitionGroup.
 <TransitionTween
-  // The sortKey prop defines the order of the items in the list. It is a function of the item data.
+  // The sortKey prop defines the order of the items in the list. It is a
+  // function of the item data.
   sortKey={d => d}
   styles={[
     {
@@ -49,7 +51,8 @@ import { TransitionTween, Tween } from 'react-tween';
   // By default, the initial style is the one given by the styles array.
   willEnter={() => ({ height: 0 })}
   // The willLeave prop defines the final style when an item is removed.
-  // By default, the final style is whatever the item's style is at the time it is removed.
+  // By default, the final style is whatever the item's style is at the time
+  // it is removed.
   willLeave={() => ({ height: 0 })}
 >
   {styles => (
@@ -65,7 +68,8 @@ import { TransitionTween, Tween } from 'react-tween';
   )}
 </TransitionTween>
 
-// Both Tween and TransitionTween support customized delay, duration, and easing.
+// Both Tween and TransitionTween support customized delay, duration, and
+// easing.
 import { easeSinInOut } from 'd3-ease';
 
 <Tween
