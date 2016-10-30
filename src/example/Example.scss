@@ -1,13 +1,10 @@
+:local(.bar) {
+  fill: lightgray;
+}
+
 :local(.example) {
-  align-items: center;
-  background-color: orange;
   cursor: pointer;
-  display: flex;
   flex-shrink: 0;
-  height: 100px;
-  justify-content: center;
-  text-align: center;
-  width: 100px;
 
   &:not(:first-child) {
     margin-left: 50px;
@@ -17,4 +14,14 @@
 :local(.examples) {
   display: flex;
   margin: 50px;
+}
+
+:local(.opacity) {
+  align-items: center;
+  background-color: orange;
+  display: flex;
+  height: 100px;
+  justify-content: center;
+  text-align: center;
+  width: 100px;
 }

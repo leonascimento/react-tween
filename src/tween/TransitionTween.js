@@ -122,7 +122,7 @@ export default class TransitionTween extends React.Component {
   }
 
   render() {
-    const { children, styles: stylesProp, ...props } = this.props;
+    const { children, delay, duration, easing, sortKey, stagger, styles: stylesProp, willEnter, willLeave, ...props } = this.props;
     const { styles } = this.state;
 
     return React.cloneElement(children(styles.map(style => ({
