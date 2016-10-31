@@ -93,5 +93,4 @@ Comparison to `react-tween-state`
 ---
 - `react-tween-state` uses mixins
 - `react-tween-state` requires a stateful component
-- `react-tween-state` is imperative
 - `react-tween-state` does not implement a TransitionGroup
