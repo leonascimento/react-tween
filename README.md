@@ -91,10 +91,7 @@ Why not spring-based animation? I think spring-based animation is, in many cases
 
 Comparison to `react-tween-state`
 ---
-I owe a debt of gratitude to Cheng Lou for the library that started it all. That being said, there are a number of drawbacks to using `react-tween-state` these days.
-- `react-tween-state` is mixin-based.
-- `react-tween-state` requires the animated component to be stateful.
-- `react-tween-state` has an imperative API.
-- `react-tween-state` does not implement a TransitionGroup component.
-
-Note that these drawbacks are addressed by `react-motion` as well as by this library.
+- `react-tween-state` uses mixins
+- `react-tween-state` requires a stateful component
+- `react-tween-state` is imperative
+- `react-tween-state` does not implement a TransitionGroup
