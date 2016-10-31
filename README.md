@@ -88,3 +88,13 @@ Implementation
 Comparison to `react-motion`
 ---
 Why not spring-based animation? I think spring-based animation is, in many cases, ideal. But sometimes it's not possible to use it. For example, the designer may specify a traditional easing-based animation, or the product may require the duration to be limited, rather than open-ended. In this case, it's better to use an easing-based animation rather than a spring-based one. `react-tween` is simply another tool in the frontend developer's toolbox.
+
+Comparison to `react-tween-state`
+---
+I owe a debt of gratitude to Cheng Lou for the library that started it all. That being said, there are a number of drawbacks to using `react-tween-state` these days.
+- `react-tween-state` is mixin-based.
+- `react-tween-state` requires the animated component to be stateful.
+- `react-tween-state` has an imperative API.
+- `react-tween-state` does not implement a TransitionGroup component.
+
+Note that these drawbacks are addressed by `react-motion` as well as by this library.
