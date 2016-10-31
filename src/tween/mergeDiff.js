@@ -1,13 +1,8 @@
 export default function mergeDiff(keys, nextKeys) {
-  const order = {};
-  for (let i = 0; i < keys.length; i++) {
-    order[keys[i]] = i;
-  }
-
-  const nextOrder = {};
-  for (let i = 0; i < nextKeys.length; i++) {
-    nextOrder[nextKeys[i]] = i;
-  }
+  const nextOrder = nextKeys.reduce((result, k, i) => {
+    result[k] = i;
+    return result;
+  }, {});
 
   let prefix = [];
   let currentSegment = prefix;
