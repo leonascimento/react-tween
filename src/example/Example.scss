@@ -1,8 +1,8 @@
-:local(.bar) {
+.bar {
   fill: lightgray;
 }
 
-:local(.example) {
+.example {
   cursor: pointer;
   flex-shrink: 0;
 
@@ -11,12 +11,12 @@
   }
 }
 
-:local(.examples) {
+.examples {
   display: flex;
   margin: 50px;
 }
 
-:local(.opacity) {
+.opacity {
   align-items: center;
   background-color: orange;
   display: flex;
