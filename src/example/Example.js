@@ -12,7 +12,7 @@ export default function Example({ className, ...props }) {
   const barRadius = 6;
 
   const heightScale = scaleLinear()
-    .domain([0, 250])
+    .domain([0, 150])
     .range([0, height]);
 
   return (
@@ -40,17 +40,17 @@ export default function Example({ className, ...props }) {
           const data = flag ?
             [
               { index: 0, value: 50 },
-              { index: 2, value: 100 },
-              { index: 3, value: 150 },
+              { index: 2, value: 75 },
+              { index: 3, value: 100 },
               { index: 4, value: 125 },
-              { index: 6, value: 100 },
+              { index: 6, value: 150 },
             ] :
             [
-              { index: 0, value: 50 },
-              { index: 1, value: 75 },
+              { index: 1, value: 50 },
               { index: 2, value: 100 },
-              { index: 5, value: 125 },
-              { index: 6, value: 150 },
+              { index: 5, value: 150 },
+              { index: 6, value: 100 },
+              { index: 7, value: 50 },
             ];
 
           const barScale = scaleBand()

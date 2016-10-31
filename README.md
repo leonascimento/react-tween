@@ -82,7 +82,7 @@ import { easeSinInOut } from 'd3-ease';
 Implementation
 ---
 - The API is based off of [react-motion](https://github.com/chenglou/react-motion).
-- `mergeDiff` (for ordering `TransitionTween` items) is essentially `mergeDiff` from `react-motion`.
+- `mergeDiff` (for ordering `TransitionTween` items) is conceptually inspired by the function of the same name from `react-motion`.
 - The animation is implemented using d3's interpolation, easing, and timer. Any value d3 can interpolate, `react-tween` can interpolate.
 
 Comparison to `react-motion`

@@ -1,1 +1,0 @@
-- map out the full desired mergeDiff state. I think it's (1) start with nextKeys (including shared), then (2) slide prevKeys into place within the nextKeys array.
