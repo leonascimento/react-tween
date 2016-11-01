@@ -16,9 +16,9 @@ Usage
 import { Animations, TransitionTween, Tween } from 'react-tween';
 
 // Tween is declarative.
-// toValue defines the destination value.
-// Whenever the destination changes, the style is animated to that
-// destination value.
+// toValue defines the destination style.
+// Whenever the destination style changes, the inner component is animated to that
+// destination style.
 <Tween animation={Animations.timing({ toValue: { opacity: 1 } })}>
   {style => (
     <div style={{ opacity: style.opacity }}>
@@ -33,7 +33,7 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
     {
       // The key is the child component key.
       key: '0',
-      // The animation describes the set of values being animated.
+      // toValue defines the destination style for this item.
       animation: Animations.timing({ toValue: { height: 100 } }),
       // The data is an arbitrary value associated with the key.
       data: '0',
@@ -44,11 +44,9 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
       data: '1',
     },
   ]}
-  // The willEnter prop defines the style when an item is added.
-  // By default, the enter style is given by the animations in the animations array.
+  // The willEnter prop defines the initial style of an item when it is first added.
   willEnter={style => ({ ...style, height: 0 })}
-  // The willLeave prop defines the animation when an item is removed.
-  // By default, the leave animation is a no-op.
+  // The willLeave prop defines the animation of an item when it is removed.
   willLeave={style => Animation.timing({ toValue: { ...style, height: 0 } })}
 >
   {styles => (
