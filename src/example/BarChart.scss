@@ -1,0 +1,15 @@
+.chart {
+  flex-shrink: 0;
+}
+
+.label {
+  flex-shrink: 0;
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.labelledChart {
+  display: flex;
+  flex-direction: column;
+}
