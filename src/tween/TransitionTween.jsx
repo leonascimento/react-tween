@@ -1,11 +1,12 @@
-import Animations from './Animations';
-import mergeDiff from './mergeDiff';
 import React from 'react';
 import { timer } from 'd3-timer';
+import Animations from './Animations';
+import mergeDiff from './mergeDiff';
+import PropTypes from './PropTypes';
 
 export default class TransitionTween extends React.Component {
   static propTypes = {
-    animations: React.PropTypes.array,
+    animations: React.PropTypes.arrayOf(PropTypes.animation),
     children: React.PropTypes.func,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
@@ -37,7 +38,7 @@ export default class TransitionTween extends React.Component {
     // Multiple kickoffs halt and resume the animation from the current state.
 
     const extractAnimationsByKey = animations => animations.reduce((result, animation) => {
-      result[animation.key] = animation;
+      result[animation.key] = animation; // eslint-disable-line no-param-reassign
       return result;
     }, {});
 
@@ -48,8 +49,11 @@ export default class TransitionTween extends React.Component {
     const nextKeys = Object.keys(nextAnimationsByKey);
     const mergedKeys = mergeDiff(keys, nextKeys);
 
-    const animations = mergedKeys.map(k => {
-      if (animationsByKey.hasOwnProperty(k) && nextAnimationsByKey.hasOwnProperty(k)) {
+    const animations = mergedKeys.map((k) => {
+      if (
+        Object.prototype.hasOwnProperty.call(animationsByKey, k) &&
+        Object.prototype.hasOwnProperty.call(nextAnimationsByKey, k)
+      ) {
         // key is shared by current and next animations
         return {
           key: k,
@@ -58,7 +62,7 @@ export default class TransitionTween extends React.Component {
           animation: nextAnimationsByKey[k].animation,
           data: nextAnimationsByKey[k].data,
         };
-      } else if (nextAnimationsByKey.hasOwnProperty(k)) {
+      } else if (Object.prototype.hasOwnProperty.call(nextAnimationsByKey, k)) {
         // key is added
         const enterStyle = this.props.willEnter(nextAnimationsByKey[k].animation.endStyle);
 
@@ -69,19 +73,19 @@ export default class TransitionTween extends React.Component {
           animation: nextAnimationsByKey[k].animation,
           data: nextAnimationsByKey[k].data,
         };
-      } else {
-        // key is removed
-        const leaveAnimation = this.props.willLeave(animationsByKey[k].currentStyle);
-
-        return {
-          key: k,
-          startStyle: animationsByKey[k].currentStyle,
-          currentStyle: animationsByKey[k].currentStyle,
-          animation: leaveAnimation,
-          data: animationsByKey[k].data,
-          removed: true,
-        };
       }
+
+      // key is removed
+      const leaveAnimation = this.props.willLeave(animationsByKey[k].currentStyle);
+
+      return {
+        key: k,
+        startStyle: animationsByKey[k].currentStyle,
+        currentStyle: animationsByKey[k].currentStyle,
+        animation: leaveAnimation,
+        data: animationsByKey[k].data,
+        removed: true,
+      };
     });
 
     this.setState({ animations });
@@ -94,22 +98,9 @@ export default class TransitionTween extends React.Component {
     this.stopTimerIfStarted();
   }
 
-  render() {
-    const { animations: animationsProp, children, willEnter, willLeave, ...props } = this.props;
-    const { animations } = this.state;
-
-    return React.cloneElement(children(animations.map(animation => ({
-      key: animation.key,
-      style: animation.currentStyle,
-      data: animation.data,
-    }))), props);
-  }
-
   startTimer() {
-    const { delay } = this.props;
-
     this.stopTimerIfStarted();
-    this.timer = timer(elapsed => this.updateFromTimer(elapsed), delay);
+    this.timer = timer(elapsed => this.updateFromTimer(elapsed));
   }
 
   stopTimer() {
@@ -124,7 +115,9 @@ export default class TransitionTween extends React.Component {
   }
 
   updateFromTimer(elapsed) {
-    const fullDuration = Math.max(...this.state.animations.map(animation => animation.animation.duration));
+    const fullDuration = Math.max(...this.state.animations.map(animation => (
+      animation.animation.duration
+    )));
     if (elapsed > 0.99 * fullDuration) {
       const animations = this.state.animations
         .filter(animation => !animation.removed)
@@ -146,5 +139,23 @@ export default class TransitionTween extends React.Component {
     }));
 
     this.setState({ animations });
+  }
+
+  render() {
+    const {
+      animations: animationsProp, // eslint-disable-line no-unused-vars
+      children,
+      willEnter, // eslint-disable-line no-unused-vars
+      willLeave, // eslint-disable-line no-unused-vars
+      ...props
+    } = this.props;
+
+    const { animations } = this.state;
+
+    return React.cloneElement(children(animations.map(animation => ({
+      key: animation.key,
+      style: animation.currentStyle,
+      data: animation.data,
+    }))), props);
   }
 }

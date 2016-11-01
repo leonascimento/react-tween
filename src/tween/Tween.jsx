@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from './PropTypes';
 import TransitionTween from './TransitionTween';
 
 export default function Tween({ animation, children, ...props }) {
@@ -16,6 +17,6 @@ export default function Tween({ animation, children, ...props }) {
 }
 
 Tween.propTypes = {
-  animation: React.PropTypes.object,
+  animation: React.PropTypes.instanceOf(PropTypes.animation),
   children: React.PropTypes.func,
 };

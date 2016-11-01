@@ -3,7 +3,15 @@ import React from 'react';
 import { scaleLinear } from 'd3-scale';
 import styles from './BarChart.scss';
 
-export default function BarChart({ className, data, height, interpolatedStyles, label, width, ...props }) {
+export default function BarChart({
+  className,
+  data,
+  height,
+  interpolatedStyles,
+  label,
+  width,
+  ...props
+}) {
   const barRadius = 6;
   const maxValue = Math.max(...data.map(d => d.value));
   const heightScale = scaleLinear()
@@ -44,3 +52,22 @@ export default function BarChart({ className, data, height, interpolatedStyles, 
     </div>
   );
 }
+
+BarChart.propTypes = {
+  className: React.PropTypes.string,
+  data: React.PropTypes.arrayOf(React.PropTypes.shape({
+    value: React.PropTypes.number,
+  })),
+  height: React.PropTypes.number,
+  interpolatedStyles: React.PropTypes.arrayOf(React.PropTypes.shape({
+    style: React.PropTypes.shape({
+      color: React.PropTypes.string,
+      opacity: React.PropTypes.number,
+      position: React.PropTypes.number,
+      value: React.PropTypes.number,
+      width: React.PropTypes.number,
+    }),
+  })),
+  label: React.PropTypes.string,
+  width: React.PropTypes.number,
+};

@@ -1,10 +1,10 @@
-import { Animations, TransitionTween, Tween } from '..';
-import BarChart from './BarChart';
 import classNames from 'classnames';
-import ClickableExample from './ClickableExample';
 import { easeBounce } from 'd3-ease';
 import React from 'react';
 import { scaleBand } from 'd3-scale';
+import { Animations, TransitionTween, Tween } from '..';
+import BarChart from './BarChart';
+import ClickableExample from './ClickableExample';
 import styles from './Example.scss';
 
 export default function Example({ className, ...props }) {
@@ -150,15 +150,15 @@ export default function Example({ className, ...props }) {
       </ClickableExample>
       <ClickableExample>
         {(flag, onFlag) => {
-          const data = flag ?
-            [
+          const data = flag
+            ? [
               { index: 0, value: 50 },
               { index: 1, value: 100 },
               { index: 2, value: 150 },
               { index: 3, value: 100 },
               { index: 4, value: 50 },
-            ] :
-            [
+            ]
+            : [
               { index: 0, value: 50 },
               { index: 1, value: 75 },
               { index: 2, value: 100 },
@@ -178,17 +178,19 @@ export default function Example({ className, ...props }) {
                   key: d.index.toString(),
                   animation: Animations.timing({
                     toValue: {
+                      color: 'lightgray',
+                      opacity: 1,
                       position: barScale(d.index),
                       value: d.value,
                       width: barScale.bandwidth(),
-                      opacity: 1,
-                      color: 'lightgray',
                     },
                   }),
                   data: d.index,
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
+              willLeave={style => Animations.timing({
+                toValue: { ...style, value: 0, opacity: 0 },
+              })}
             >
               {interpolatedStyles => (
                 <BarChart
@@ -207,13 +209,13 @@ export default function Example({ className, ...props }) {
       </ClickableExample>
       <ClickableExample>
         {(flag, onFlag) => {
-          const data = flag ?
-            [
+          const data = flag
+            ? [
               { index: 0, value: 50 },
               { index: 2, value: 150 },
               { index: 4, value: 50 },
-            ] :
-            [
+            ]
+            : [
               { index: 0, value: 50 },
               { index: 1, value: 75 },
               { index: 2, value: 100 },
@@ -236,10 +238,10 @@ export default function Example({ className, ...props }) {
                   animation: Animations.sequence([
                     Animations.timing({
                       toValue: {
+                        opacity: 1,
                         position: barScale(d.index),
                         value: d.value,
                         width: barScale.bandwidth(),
-                        opacity: 1,
                       },
                     }),
                     Animations.timing({
@@ -251,7 +253,9 @@ export default function Example({ className, ...props }) {
                   data: d.index,
                 }))}
               willEnter={style => ({ ...style, color, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
+              willLeave={style => Animations.timing({
+                toValue: { ...style, value: 0, opacity: 0 },
+              })}
             >
               {interpolatedStyles => (
                 <BarChart
@@ -270,13 +274,13 @@ export default function Example({ className, ...props }) {
       </ClickableExample>
       <ClickableExample>
         {(flag, onFlag) => {
-          const data = flag ?
-            [
+          const data = flag
+            ? [
               { index: 0, value: 50 },
               { index: 2, value: 150 },
               { index: 4, value: 50 },
-            ] :
-            [
+            ]
+            : [
               { index: 0, value: 50 },
               { index: 1, value: 75 },
               { index: 2, value: 100 },
@@ -299,10 +303,10 @@ export default function Example({ className, ...props }) {
                   animation: Animations.parallel([
                     Animations.timing({
                       toValue: {
+                        opacity: 1,
                         position: barScale(d.index),
                         value: d.value,
                         width: barScale.bandwidth(),
-                        opacity: 1,
                       },
                     }),
                     Animations.timing({
@@ -315,7 +319,9 @@ export default function Example({ className, ...props }) {
                   data: d.index,
                 }))}
               willEnter={style => ({ ...style, color, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
+              willLeave={style => Animations.timing({
+                toValue: { ...style, value: 0, opacity: 0 },
+              })}
             >
               {interpolatedStyles => (
                 <BarChart
@@ -335,3 +341,7 @@ export default function Example({ className, ...props }) {
     </div>
   );
 }
+
+Example.propTypes = {
+  className: React.PropTypes.string,
+};

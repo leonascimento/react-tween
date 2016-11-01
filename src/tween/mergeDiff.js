@@ -1,14 +1,14 @@
 export default function mergeDiff(keys, nextKeys) {
   const nextOrder = nextKeys.reduce((result, k, i) => {
-    result[k] = i;
+    result[k] = i; // eslint-disable-line no-param-reassign
     return result;
   }, {});
 
-  let prefix = [];
+  const prefix = [];
   let currentSegment = prefix;
   const segments = {};
-  for (let i = 0; i < keys.length; i++) {
-    if (nextOrder.hasOwnProperty(keys[i])) {
+  for (let i = 0; i < keys.length; i += 1) {
+    if (Object.prototype.hasOwnProperty.call(nextOrder, keys[i])) {
       segments[keys[i]] = [];
       currentSegment = segments[keys[i]];
     } else {
@@ -17,9 +17,9 @@ export default function mergeDiff(keys, nextKeys) {
   }
 
   let mergedKeys = prefix.slice();
-  for (let i = 0; i < nextKeys.length; i++) {
+  for (let i = 0; i < nextKeys.length; i += 1) {
     mergedKeys.push(nextKeys[i]);
-    if (segments.hasOwnProperty(nextKeys[i])) {
+    if (Object.prototype.hasOwnProperty.call(segments, nextKeys[i])) {
       mergedKeys = mergedKeys.concat(segments[nextKeys[i]]);
     }
   }

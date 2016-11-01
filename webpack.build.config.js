@@ -20,8 +20,8 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['babel'],
         include: [path.resolve(__dirname, 'src')],
+        loaders: ['babel', 'eslint'],
       },
     ],
   },

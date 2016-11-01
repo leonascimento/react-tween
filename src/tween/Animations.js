@@ -2,8 +2,11 @@ import clamp from 'lodash.clamp';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 
-export class TimingAnimation {
+export class Animation {}
+
+export class TimingAnimation extends Animation {
   constructor({ toValue, duration = 400, easing = easeCubicInOut, delay = 0 }) {
+    super();
     this.toValue = toValue;
     this.durationWithoutDelay = duration;
     this.easing = easing;
@@ -12,7 +15,8 @@ export class TimingAnimation {
 
   interpolateStyle(startStyle, elapsed) {
     // Clamp instead of allowing overshoot because some overshoots are invalid.
-    // This is especially noticeable with parallel color animations that happen at different rates (some colors go to white instead of the destination value).
+    // This is especially noticeable with parallel color animations that happen at different rates
+    // (some colors go to white instead of the destination value).
     const t = clamp((elapsed - this.delay) / this.durationWithoutDelay, 0, 1);
     return interpolate(startStyle, this.toValue)(this.easing(t));
   }
@@ -26,15 +30,16 @@ export class TimingAnimation {
   }
 }
 
-export class SequenceAnimation {
+export class SequenceAnimation extends Animation {
   constructor(animations) {
+    super();
     this.animations = animations;
   }
 
   interpolateStyle(startStyle, elapsed) {
     let offset = 0;
     let style = startStyle;
-    for (let i = 0; i < this.animations.length; i++) {
+    for (let i = 0; i < this.animations.length; i += 1) {
       const animation = this.animations[i];
 
       if (elapsed - offset < animation.duration) {
@@ -52,39 +57,52 @@ export class SequenceAnimation {
   }
 
   get endStyle() {
-    return this.animations.reduce((result, animation) => ({ ...result, ...animation.endStyle }), {});
+    return this.animations.reduce((result, animation) => ({
+      ...result,
+      ...animation.endStyle,
+    }), {});
   }
 }
 
-export class StaggerAnimation {
+export class StaggerAnimation extends Animation {
   constructor(stagger, animations) {
+    super();
     this.stagger = stagger;
     this.animations = animations;
   }
 
   interpolateStyle(startStyle, elapsed) {
-    return this.animations.reduce((result, animation, i) => ({ ...result, ...animation.interpolateStyle(startStyle, elapsed - (this.stagger * i)) }), {});
+    return this.animations.reduce((result, animation, i) => ({
+      ...result,
+      ...animation.interpolateStyle(startStyle, elapsed - (this.stagger * i)),
+    }), {});
   }
 
   get duration() {
-    return Math.max(...this.animations.map((animation, i) => animation.duration + (this.stagger * i)));
+    return Math.max(...this.animations.map((animation, i) => (
+      animation.duration + (this.stagger * i)
+    )));
   }
 
   get endStyle() {
-    return this.animations.reduce((result, animation) => ({ ...result, ...animation.endStyle }), {});
+    return this.animations.reduce((result, animation) => ({
+      ...result,
+      ...animation.endStyle,
+    }), {});
   }
 }
 
-export class IdentityAnimation {
+export class IdentityAnimation extends Animation {
   constructor({ toValue }) {
+    super();
     this.toValue = toValue;
   }
 
-  interpolateStyle(startStyle, elapsed) {
+  interpolateStyle() {
     return this.toValue;
   }
 
-  get duration() {
+  get duration() { // eslint-disable-line class-methods-use-this
     return 0;
   }
 
@@ -93,10 +111,10 @@ export class IdentityAnimation {
   }
 }
 
-export default class Animations {
-  static timing = options => new TimingAnimation(options);
-  static sequence = animations => new SequenceAnimation(animations);
-  static parallel = animations => new StaggerAnimation(0, animations);
-  static stagger = (stagger, animations) => new StaggerAnimation(stagger, animations);
-  static identity = options => new IdentityAnimation(options);
-}
+export default {
+  timing: options => new TimingAnimation(options),
+  sequence: animations => new SequenceAnimation(animations),
+  parallel: animations => new StaggerAnimation(0, animations),
+  stagger: (stagger, animations) => new StaggerAnimation(stagger, animations),
+  identity: options => new IdentityAnimation(options),
+};

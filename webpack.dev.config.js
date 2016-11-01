@@ -13,17 +13,20 @@ module.exports = {
     publicPath: '/build/',
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        loaders: ['babel'],
+        test: /\.jsx?$/,
         include: [path.resolve(__dirname, 'src')],
+        loaders: ['babel', 'eslint'],
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css?localIdentName=react-tween-[name]-[local]&modules', 'postcss', 'sass'],
         include: [path.resolve(__dirname, 'src')],
+        loaders: ['style', 'css?localIdentName=react-tween-[name]-[local]&modules', 'postcss', 'sass'],
       },
     ],
   },
