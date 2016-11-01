@@ -1,40 +1,33 @@
-import { easeCubicInOut } from 'd3-ease';
-import { interpolate } from 'd3-interpolate';
+import Animations from './Animations';
 import mergeDiff from './mergeDiff';
 import React from 'react';
 import { timer } from 'd3-timer';
 
 export default class TransitionTween extends React.Component {
   static propTypes = {
+    animations: React.PropTypes.array,
     children: React.PropTypes.func,
-    delay: React.PropTypes.number,
-    duration: React.PropTypes.number,
-    easing: React.PropTypes.func,
-    styles: React.PropTypes.array,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,
   };
 
   static defaultProps = {
-    delay: 0,
-    duration: 400,
-    easing: easeCubicInOut,
-    willEnter: () => ({}),
-    willLeave: () => ({}),
+    willEnter: style => style,
+    willLeave: style => Animations.identity(style),
   };
 
   constructor(props) {
     super(props);
 
-    const styles = props.styles.map(style => ({
-      key: style.key,
-      startStyle: style.style,
-      currentStyle: style.style,
-      endStyle: style.style,
-      data: style.data,
+    const animations = props.animations.map(animation => ({
+      key: animation.key,
+      startStyle: animation.animation.endStyle,
+      currentStyle: animation.animation.endStyle,
+      animation: animation.animation,
+      data: animation.data,
     }));
 
-    this.state = { styles };
+    this.state = { animations };
 
     this.timer = null;
   }
@@ -43,60 +36,55 @@ export default class TransitionTween extends React.Component {
     // Animation is kicked off when props are received.
     // Multiple kickoffs halt and resume the animation from the current state.
 
-    const extractStylesByKey = styles => styles.reduce((result, style) => {
-      result[style.key] = style;
+    const extractAnimationsByKey = animations => animations.reduce((result, animation) => {
+      result[animation.key] = animation;
       return result;
     }, {});
 
-    const stylesByKey = extractStylesByKey(this.state.styles);
-    const nextStylesByKey = extractStylesByKey(nextProps.styles);
+    const animationsByKey = extractAnimationsByKey(this.state.animations);
+    const nextAnimationsByKey = extractAnimationsByKey(nextProps.animations);
 
-    const keys = Object.keys(stylesByKey);
-    const nextKeys = Object.keys(nextStylesByKey);
+    const keys = Object.keys(animationsByKey);
+    const nextKeys = Object.keys(nextAnimationsByKey);
     const mergedKeys = mergeDiff(keys, nextKeys);
 
-    const generateEnterStyle = k => ({
-      ...nextStylesByKey[k].style,
-      ...nextProps.willEnter(),
-    });
-    const generateLeaveStyle = k => ({
-      ...stylesByKey[k].currentStyle,
-      ...nextProps.willLeave(),
-    });
-
-    const styles = mergedKeys.map(k => {
-      if (stylesByKey.hasOwnProperty(k) && nextStylesByKey.hasOwnProperty(k)) {
-        // key is shared by current and next styles
+    const animations = mergedKeys.map(k => {
+      if (animationsByKey.hasOwnProperty(k) && nextAnimationsByKey.hasOwnProperty(k)) {
+        // key is shared by current and next animations
         return {
           key: k,
-          startStyle: stylesByKey[k].currentStyle,
-          currentStyle: stylesByKey[k].currentStyle,
-          endStyle: nextStylesByKey[k].style,
-          data: nextStylesByKey[k].data,
+          startStyle: animationsByKey[k].currentStyle,
+          currentStyle: animationsByKey[k].currentStyle,
+          animation: nextAnimationsByKey[k].animation,
+          data: nextAnimationsByKey[k].data,
         };
-      } else if (nextStylesByKey.hasOwnProperty(k)) {
+      } else if (nextAnimationsByKey.hasOwnProperty(k)) {
         // key is added
+        const enterStyle = this.props.willEnter(nextAnimationsByKey[k].animation.endStyle);
+
         return {
           key: k,
-          startStyle: generateEnterStyle(k),
-          currentStyle: generateEnterStyle(k),
-          endStyle: nextStylesByKey[k].style,
-          data: nextStylesByKey[k].data,
+          startStyle: enterStyle,
+          currentStyle: enterStyle,
+          animation: nextAnimationsByKey[k].animation,
+          data: nextAnimationsByKey[k].data,
         };
       } else {
         // key is removed
+        const leaveAnimation = this.props.willEnter(animationsByKey[k].currentStyle);
+
         return {
           key: k,
-          startStyle: stylesByKey[k].currentStyle,
-          currentStyle: stylesByKey[k].currentStyle,
-          endStyle: generateLeaveStyle(k),
-          data: stylesByKey[k].data,
+          startStyle: animationsByKey[k].currentStyle,
+          currentStyle: animationsByKey[k].currentStyle,
+          animation: leaveAnimation,
+          data: animationsByKey[k].data,
           removed: true,
         };
       }
     });
 
-    this.setState({ styles });
+    this.setState({ animations });
 
     this.startTimer();
   }
@@ -107,13 +95,13 @@ export default class TransitionTween extends React.Component {
   }
 
   render() {
-    const { children, delay, duration, easing, styles: stylesProp, willEnter, willLeave, ...props } = this.props;
-    const { styles } = this.state;
+    const { animations: animationsProp, children, willEnter, willLeave, ...props } = this.props;
+    const { animations } = this.state;
 
-    return React.cloneElement(children(styles.map(style => ({
-      key: style.key,
-      style: style.currentStyle,
-      data: style.data,
+    return React.cloneElement(children(animations.map(animation => ({
+      key: animation.key,
+      style: animation.currentStyle,
+      data: animation.data,
     }))), props);
   }
 
@@ -136,31 +124,27 @@ export default class TransitionTween extends React.Component {
   }
 
   updateFromTimer(elapsed) {
-    const { duration, easing } = this.props;
-
-    const t = elapsed / duration;
-    if (t > 0.99) {
-      const styles = this.state.styles
-        .filter(style => !style.removed)
-        .map(style => ({
-          ...style,
-          startStyle: style.endStyle,
-          currentStyle: style.endStyle,
+    const fullDuration = Math.max(...this.state.animations.map(animation => animation.animation.duration));
+    if (elapsed > 0.99 * fullDuration) {
+      const animations = this.state.animations
+        .filter(animation => !animation.removed)
+        .map(animation => ({
+          ...animation,
+          startStyle: animation.animation.endStyle,
+          currentStyle: animation.animation.endStyle,
         }));
 
-      this.setState({ styles });
+      this.setState({ animations });
 
       this.stopTimer();
       return;
     }
 
-    const styles = this.state.styles.map(style => {
-      return {
-        ...style,
-        currentStyle: interpolate(style.startStyle, style.endStyle)(easing(t)),
-      };
-    });
+    const animations = this.state.animations.map(animation => ({
+      ...animation,
+      currentStyle: animation.animation.interpolateStyle(animation.startStyle, elapsed),
+    }));
 
-    this.setState({ styles });
+    this.setState({ animations });
   }
 }

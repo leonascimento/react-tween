@@ -1,10 +1,9 @@
+import { Animations, Tween } from '..';
 import classNames from 'classnames';
 import ClickableExample from './ClickableExample';
 import React from 'react';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import styles from './Example.scss';
-import TransitionTween from '../tween/TransitionTween';
-import Tween from '../tween/Tween';
 
 export default function Example({ className, ...props }) {
   const height = 100;
@@ -20,22 +19,7 @@ export default function Example({ className, ...props }) {
       className={classNames(styles.examples, className)}
       {...props}
     >
-      <ClickableExample>
-        {(flag, onFlag) => (
-          <Tween style={{ opacity: (flag ? 0.5 : 1) }}>
-            {style => (
-              <div
-                className={classNames(styles.opacity, styles.example)}
-                onClick={onFlag}
-                style={style}
-              >
-                Click to animate opacity
-              </div>
-            )}
-          </Tween>
-        )}
-      </ClickableExample>
-      <ClickableExample>
+      {/*<ClickableExample>
         {(flag, onFlag) => {
           const data = flag ?
             [
@@ -99,6 +83,105 @@ export default function Example({ className, ...props }) {
             </TransitionTween>
           );
         }}
+      </ClickableExample> */}
+      <ClickableExample>
+        {(flag, onFlag) => (
+          <Tween
+            animation={Animations.timing({
+              toValue: { opacity: (flag ? 0.5 : 1) },
+            })}
+          >
+            {style => (
+              <div
+                className={classNames(styles.box, styles.example)}
+                onClick={onFlag}
+                style={style}
+              >
+                Click to animate opacity
+              </div>
+            )}
+          </Tween>
+        )}
+      </ClickableExample>
+      <ClickableExample>
+        {(flag, onFlag) => (
+          <Tween
+            animation={Animations.sequence([
+              Animations.timing({
+                toValue: { opacity: (flag ? 0.5 : 1) },
+              }),
+              Animations.timing({
+                toValue: { color: (flag ? 'skyblue' : 'orange') },
+              }),
+            ])}
+          >
+            {style => (
+              <div
+                className={classNames(styles.box, styles.example)}
+                onClick={onFlag}
+                style={{
+                  opacity: style.opacity,
+                  backgroundColor: style.color,
+                }}
+              >
+                Click to animate opacity, then color
+              </div>
+            )}
+          </Tween>
+        )}
+      </ClickableExample>
+      <ClickableExample>
+        {(flag, onFlag) => (
+          <Tween
+            animation={Animations.timing({
+              toValue: {
+                opacity: (flag ? 0.5 : 1),
+                color: (flag ? 'skyblue' : 'orange'),
+              },
+            })}
+          >
+            {style => (
+              <div
+                className={classNames(styles.box, styles.example)}
+                onClick={onFlag}
+                style={{
+                  opacity: style.opacity,
+                  backgroundColor: style.color,
+                }}
+              >
+                Click to animate opacity and color in parallel
+              </div>
+            )}
+          </Tween>
+        )}
+      </ClickableExample>
+      <ClickableExample>
+        {(flag, onFlag) => (
+          <Tween
+            animation={Animations.parallel([
+              Animations.timing({
+                toValue: { opacity: (flag ? 0.5 : 1) },
+                duration: 1000,
+              }),
+              Animations.timing({
+                toValue: { color: (flag ? 'skyblue' : 'orange') },
+              }),
+            ])}
+          >
+            {style => (
+              <div
+                className={classNames(styles.box, styles.example)}
+                onClick={onFlag}
+                style={{
+                  opacity: style.opacity,
+                  backgroundColor: style.color,
+                }}
+              >
+                Click to animate opacity and color in parallel at different rates
+              </div>
+            )}
+          </Tween>
+        )}
       </ClickableExample>
     </div>
   );

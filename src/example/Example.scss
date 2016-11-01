@@ -2,6 +2,18 @@
   fill: lightgray;
 }
 
+.box {
+  align-items: center;
+  background-color: orange;
+  display: flex;
+  font-size: 14px;
+  height: 120px;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  width: 120px;
+}
+
 .example {
   cursor: pointer;
   flex-shrink: 0;
@@ -14,14 +26,4 @@
 .examples {
   display: flex;
   margin: 50px;
-}
-
-.opacity {
-  align-items: center;
-  background-color: orange;
-  display: flex;
-  height: 100px;
-  justify-content: center;
-  text-align: center;
-  width: 100px;
 }

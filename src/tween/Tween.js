@@ -1,13 +1,12 @@
 import React from 'react';
 import TransitionTween from './TransitionTween';
 
-export default function Tween({ children, style, ...props }) {
+export default function Tween({ animation, children, ...props }) {
   return (
     <TransitionTween
-      styles={[{
+      animations={[{
         key: '0',
-        style,
-        data: null,
+        animation,
       }]}
       {...props}
     >
@@ -17,6 +16,6 @@ export default function Tween({ children, style, ...props }) {
 }
 
 Tween.propTypes = {
+  animation: React.PropTypes.object,
   children: React.PropTypes.func,
-  style: React.PropTypes.object,
 };
