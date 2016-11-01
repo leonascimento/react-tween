@@ -157,6 +157,6 @@ v0.1 vs v0.2
   {/* ... */}
 </Tween>
 
-// The v0.1 interface is still supported, but I think it's ultimately simpler
+// Both interfaces are supported, but I think it's ultimately simpler
 // to use the v0.2 interface for everything.
 ```
