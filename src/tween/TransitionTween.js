@@ -71,7 +71,7 @@ export default class TransitionTween extends React.Component {
         };
       } else {
         // key is removed
-        const leaveAnimation = this.props.willEnter(animationsByKey[k].currentStyle);
+        const leaveAnimation = this.props.willLeave(animationsByKey[k].currentStyle);
 
         return {
           key: k,

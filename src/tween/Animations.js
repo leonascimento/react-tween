@@ -5,7 +5,7 @@ import { interpolate } from 'd3-interpolate';
 export class TimingAnimation {
   constructor({ toValue, duration = 400, easing = easeCubicInOut, delay = 0 }) {
     this.toValue = toValue;
-    this.duration = duration;
+    this.durationWithoutDelay = duration;
     this.easing = easing;
     this.delay = delay;
   }
@@ -13,8 +13,12 @@ export class TimingAnimation {
   interpolateStyle(startStyle, elapsed) {
     // Clamp instead of allowing overshoot because some overshoots are invalid.
     // This is especially noticeable with parallel color animations that happen at different rates (some colors go to white instead of the destination value).
-    const t = clamp(elapsed / this.duration, 0, 1);
+    const t = clamp((elapsed - this.delay) / this.durationWithoutDelay, 0, 1);
     return interpolate(startStyle, this.toValue)(this.easing(t));
+  }
+
+  get duration() {
+    return this.durationWithoutDelay + this.delay;
   }
 
   get endStyle() {
@@ -52,17 +56,18 @@ export class SequenceAnimation {
   }
 }
 
-export class ParallelAnimation {
-  constructor(animations) {
+export class StaggerAnimation {
+  constructor(stagger, animations) {
+    this.stagger = stagger;
     this.animations = animations;
   }
 
   interpolateStyle(startStyle, elapsed) {
-    return this.animations.reduce((result, animation) => ({ ...result, ...animation.interpolateStyle(startStyle, elapsed) }), {});
+    return this.animations.reduce((result, animation, i) => ({ ...result, ...animation.interpolateStyle(startStyle, elapsed - (this.stagger * i)) }), {});
   }
 
   get duration() {
-    return Math.max(...this.animations.map(animation => animation.duration));
+    return Math.max(...this.animations.map((animation, i) => animation.duration + (this.stagger * i)));
   }
 
   get endStyle() {
@@ -91,6 +96,7 @@ export class IdentityAnimation {
 export default class Animations {
   static timing = options => new TimingAnimation(options);
   static sequence = animations => new SequenceAnimation(animations);
-  static parallel = animations => new ParallelAnimation(animations);
+  static parallel = animations => new StaggerAnimation(0, animations);
+  static stagger = (stagger, animations) => new StaggerAnimation(stagger, animations);
   static identity = options => new IdentityAnimation(options);
 }
