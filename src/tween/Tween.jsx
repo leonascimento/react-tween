@@ -17,6 +17,6 @@ export default function Tween({ animation, children, ...props }) {
 }
 
 Tween.propTypes = {
-  animation: React.PropTypes.instanceOf(PropTypes.animation),
+  animation: PropTypes.animation,
   children: React.PropTypes.func,
 };

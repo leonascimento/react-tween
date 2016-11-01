@@ -6,7 +6,7 @@ import PropTypes from './PropTypes';
 
 export default class TransitionTween extends React.Component {
   static propTypes = {
-    animations: React.PropTypes.arrayOf(PropTypes.animation),
+    animations: React.PropTypes.arrayOf(PropTypes.transitionAnimation),
     children: React.PropTypes.func,
     willEnter: React.PropTypes.func,
     willLeave: React.PropTypes.func,

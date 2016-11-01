@@ -1,6 +1,12 @@
 import React from 'react';
 import { Animation } from './Animations';
 
-export default {
-  animation: React.PropTypes.instanceOf(Animation),
-};
+const animation = React.PropTypes.instanceOf(Animation);
+
+const transitionAnimation = React.PropTypes.shape({
+  key: React.PropTypes.string,
+  animation,
+  data: React.PropTypes.any,
+});
+
+export default { animation, transitionAnimation };
