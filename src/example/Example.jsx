@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { easeLinear } from 'd3-ease';
 import React from 'react';
 import { scaleBand } from 'd3-scale';
 import { Animations, TransitionTween, Tween } from '..';
@@ -124,6 +125,26 @@ export default function Example({ className, ...props }) {
         )}
       </ClickableExample>
       <ClickableExample>
+        {(flag, onFlag) => (
+          <Tween
+            delay={1000}
+            duration={1000}
+            easing={easeLinear}
+            style={{ opacity: (flag ? 0.5 : 1) }}
+          >
+            {style => (
+              <div
+                className={classNames(styles.box, styles.example)}
+                onClick={onFlag}
+                style={style}
+              >
+                Click to check compatibility
+              </div>
+            )}
+          </Tween>
+        )}
+      </ClickableExample>
+      <ClickableExample>
         {(flag, onFlag) => {
           const data = flag
             ? [
@@ -160,7 +181,6 @@ export default function Example({ className, ...props }) {
                       width: barScale.bandwidth(),
                     },
                   }),
-                  data: d.index,
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({
@@ -339,7 +359,6 @@ export default function Example({ className, ...props }) {
                       },
                     }),
                   ]),
-                  data: d.index,
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({
@@ -353,6 +372,62 @@ export default function Example({ className, ...props }) {
                   height={height}
                   interpolatedStyles={interpolatedStyles}
                   label="Click to sequence position and height change"
+                  onClick={onFlag}
+                  width={width}
+                />
+              )}
+            </TransitionTween>
+          );
+        }}
+      </ClickableExample>
+      <ClickableExample>
+        {(flag, onFlag) => {
+          const data = flag
+            ? [
+              { index: 0, value: 50 },
+              { index: 2, value: 125 },
+              { index: 4, value: 150 },
+              { index: 3, value: 125 },
+            ]
+            : [
+              { index: 0, value: 50 },
+              { index: 1, value: 75 },
+              { index: 2, value: 100 },
+              { index: 3, value: 125 },
+              { index: 4, value: 150 },
+            ];
+
+          const barScale = scaleBand()
+            .domain(data.map(d => d.index))
+            .range([0, width])
+            .padding(0.3);
+
+          return (
+            <TransitionTween
+              delay={1000}
+              duration={1000}
+              easing={easeLinear}
+              styles={data
+                .map(d => ({
+                  key: d.index.toString(),
+                  style: {
+                    color: 'lightgray',
+                    opacity: 1,
+                    position: barScale(d.index),
+                    value: d.value,
+                    width: barScale.bandwidth(),
+                  },
+                }))}
+              willEnter={style => ({ ...style, value: 0, opacity: 0 })}
+              willLeave={style => ({ ...style, value: 0, opacity: 0 })}
+            >
+              {interpolatedStyles => (
+                <BarChart
+                  className={styles.example}
+                  data={data}
+                  height={height}
+                  interpolatedStyles={interpolatedStyles}
+                  label="Click to check compatibility"
                   onClick={onFlag}
                   width={width}
                 />

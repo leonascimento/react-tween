@@ -9,4 +9,17 @@ const transitionAnimation = React.PropTypes.shape({
   data: React.PropTypes.any,
 });
 
-export default { animation, transitionAnimation };
+const style = React.PropTypes.object;
+
+const transitionStyle = React.PropTypes.shape({
+  key: React.PropTypes.string,
+  style,
+  data: React.PropTypes.any,
+});
+
+export default {
+  animation,
+  transitionAnimation,
+  style,
+  transitionStyle,
+};
