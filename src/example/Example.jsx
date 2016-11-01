@@ -104,7 +104,7 @@ export default function Example({ className, ...props }) {
         {(flag, onFlag) => (
           <Tween
             animation={Animations.sequence(
-              (flag ? ['orange', 'skyblue', 'pink'] : ['pink', 'skyblue', 'orange'])
+              (flag ? ['skyblue', 'pink'] : ['skyblue', 'orange'])
                 .map(color => Animations.timing({
                   toValue: { color },
                 }))
