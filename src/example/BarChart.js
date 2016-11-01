@@ -1,10 +1,9 @@
-import { Animations, TransitionTween } from '..';
 import classNames from 'classnames';
 import React from 'react';
 import { scaleLinear } from 'd3-scale';
 import styles from './BarChart.scss';
 
-export default function BarChart({ animations, className, data, height, label, width, willEnter, willLeave, ...props }) {
+export default function BarChart({ className, data, height, interpolatedStyles, label, width, ...props }) {
   const barRadius = 6;
   const maxValue = Math.max(...data.map(d => d.value));
   const heightScale = scaleLinear()
@@ -17,36 +16,28 @@ export default function BarChart({ animations, className, data, height, label, w
       style={{ width }}
       {...props}
     >
-      <TransitionTween
-        animations={animations}
-        willEnter={willEnter}
-        willLeave={willLeave}
+      <svg
+        className={styles.chart}
+        height={height}
+        width={width}
       >
-        {interpolatedStyles => (
-          <svg
-            className={styles.chart}
-            height={height}
-            width={width}
-          >
-            {interpolatedStyles.map(style => (
-              <rect
-                className={styles.bar}
-                key={style.key}
-                height={heightScale(style.style.value) + barRadius}
-                rx={barRadius}
-                ry={barRadius}
-                style={{
-                  fill: style.style.color,
-                  opacity: style.style.opacity,
-                }}
-                width={style.style.width}
-                x={style.style.position}
-                y={height - heightScale(style.style.value)}
-              />
-            ))}
-          </svg>
-        )}
-      </TransitionTween>
+        {interpolatedStyles.map(style => (
+          <rect
+            className={styles.bar}
+            key={style.key}
+            height={heightScale(style.style.value) + barRadius}
+            rx={barRadius}
+            ry={barRadius}
+            style={{
+              fill: style.style.color,
+              opacity: style.style.opacity,
+            }}
+            width={style.style.width}
+            x={style.style.position}
+            y={height - heightScale(style.style.value)}
+          />
+        ))}
+      </svg>
       <div className={styles.label}>
         {label}
       </div>

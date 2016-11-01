@@ -1,4 +1,4 @@
-import { Animations, Tween } from '..';
+import { Animations, TransitionTween, Tween } from '..';
 import BarChart from './BarChart';
 import classNames from 'classnames';
 import ClickableExample from './ClickableExample';
@@ -172,7 +172,7 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <BarChart
+            <TransitionTween
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
@@ -187,15 +187,21 @@ export default function Example({ className, ...props }) {
                   }),
                   data: d.index,
                 }))}
-              className={styles.example}
-              data={data}
-              height={height}
-              label="Click to animate bars"
-              onClick={onFlag}
-              width={width}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
-            />
+            >
+              {interpolatedStyles => (
+                <BarChart
+                  className={styles.example}
+                  data={data}
+                  height={height}
+                  interpolatedStyles={interpolatedStyles}
+                  label="Click to animate bars"
+                  onClick={onFlag}
+                  width={width}
+                />
+              )}
+            </TransitionTween>
           );
         }}
       </ClickableExample>
@@ -223,7 +229,7 @@ export default function Example({ className, ...props }) {
           const color = (flag ? 'skyblue' : 'lightgray');
 
           return (
-            <BarChart
+            <TransitionTween
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
@@ -244,15 +250,21 @@ export default function Example({ className, ...props }) {
                   ]),
                   data: d.index,
                 }))}
-              className={styles.example}
-              data={data}
-              height={height}
-              label="Click to animate position, then color in sequence"
-              onClick={onFlag}
-              width={width}
               willEnter={style => ({ ...style, color, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
-            />
+            >
+              {interpolatedStyles => (
+                <BarChart
+                  className={styles.example}
+                  data={data}
+                  height={height}
+                  interpolatedStyles={interpolatedStyles}
+                  label="Click to animate position, then color in sequence"
+                  onClick={onFlag}
+                  width={width}
+                />
+              )}
+            </TransitionTween>
           );
         }}
       </ClickableExample>
@@ -280,7 +292,7 @@ export default function Example({ className, ...props }) {
           const color = (flag ? 'skyblue' : 'lightgray');
 
           return (
-            <BarChart
+            <TransitionTween
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
@@ -297,20 +309,26 @@ export default function Example({ className, ...props }) {
                       toValue: {
                         color,
                       },
-                      duration: 2000,
+                      duration: 1000,
                     }),
                   ]),
                   data: d.index,
                 }))}
-              className={styles.example}
-              data={data}
-              height={height}
-              label="Click to animate position and color at different rates"
-              onClick={onFlag}
-              width={width}
               willEnter={style => ({ ...style, color, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({ toValue: { ...style, value: 0, opacity: 0 } })}
-            />
+            >
+              {interpolatedStyles => (
+                <BarChart
+                  className={styles.example}
+                  data={data}
+                  height={height}
+                  interpolatedStyles={interpolatedStyles}
+                  label="Click to animate position and color at different rates"
+                  onClick={onFlag}
+                  width={width}
+                />
+              )}
+            </TransitionTween>
           );
         }}
       </ClickableExample>
