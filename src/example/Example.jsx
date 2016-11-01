@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { easeBounce } from 'd3-ease';
 import React from 'react';
 import { scaleBand } from 'd3-scale';
 import { Animations, TransitionTween, Tween } from '..';
@@ -70,27 +69,6 @@ export default function Example({ className, ...props }) {
                 style={style}
               >
                 Click to animate opacity with a delay
-              </div>
-            )}
-          </Tween>
-        )}
-      </ClickableExample>
-      <ClickableExample>
-        {(flag, onFlag) => (
-          <Tween
-            animation={Animations.timing({
-              toValue: { color: (flag ? 'skyblue' : 'orange') },
-              easing: easeBounce,
-              duration: 1000,
-            })}
-          >
-            {style => (
-              <div
-                className={classNames(styles.box, styles.example)}
-                onClick={onFlag}
-                style={{ backgroundColor: style.color }}
-              >
-                Click to animate color with bounce easing
               </div>
             )}
           </Tween>
@@ -212,8 +190,8 @@ export default function Example({ className, ...props }) {
           const data = flag
             ? [
               { index: 0, value: 50 },
-              { index: 2, value: 150 },
-              { index: 4, value: 50 },
+              { index: 2, value: 100 },
+              { index: 4, value: 150 },
             ]
             : [
               { index: 0, value: 50 },
@@ -228,31 +206,22 @@ export default function Example({ className, ...props }) {
             .range([0, width])
             .padding(0.3);
 
-          const color = (flag ? 'skyblue' : 'lightgray');
-
           return (
             <TransitionTween
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
-                  animation: Animations.sequence([
-                    Animations.timing({
-                      toValue: {
-                        opacity: 1,
-                        position: barScale(d.index),
-                        value: d.value,
-                        width: barScale.bandwidth(),
-                      },
-                    }),
-                    Animations.timing({
-                      toValue: {
-                        color,
-                      },
-                    }),
-                  ]),
-                  data: d.index,
+                  animation: Animations.timing({
+                    toValue: {
+                      color: 'lightgray',
+                      opacity: 1,
+                      position: barScale(d.index),
+                      value: d.value,
+                      width: barScale.bandwidth(),
+                    },
+                  }),
                 }))}
-              willEnter={style => ({ ...style, color, value: 0, opacity: 0 })}
+              willEnter={style => ({ ...style, value: 0, opacity: 0 })}
               willLeave={style => Animations.timing({
                 toValue: { ...style, value: 0, opacity: 0 },
               })}
@@ -263,7 +232,7 @@ export default function Example({ className, ...props }) {
                   data={data}
                   height={height}
                   interpolatedStyles={interpolatedStyles}
-                  label="Click to animate position, then color in sequence"
+                  label="Click to animate adding and removing bars"
                   onClick={onFlag}
                   width={width}
                 />
@@ -276,8 +245,10 @@ export default function Example({ className, ...props }) {
         {(flag, onFlag) => {
           const data = flag
             ? [
-              { index: 0, value: 50 },
-              { index: 2, value: 150 },
+              { index: 0, value: 150 },
+              { index: 1, value: 125 },
+              { index: 2, value: 100 },
+              { index: 3, value: 75 },
               { index: 4, value: 50 },
             ]
             : [
@@ -303,17 +274,17 @@ export default function Example({ className, ...props }) {
                   animation: Animations.parallel([
                     Animations.timing({
                       toValue: {
+                        color,
+                      },
+                    }),
+                    Animations.timing({
+                      toValue: {
                         opacity: 1,
                         position: barScale(d.index),
                         value: d.value,
                         width: barScale.bandwidth(),
                       },
-                    }),
-                    Animations.timing({
-                      toValue: {
-                        color,
-                      },
-                      duration: 1000,
+                      duration: 2000,
                     }),
                   ]),
                   data: d.index,
@@ -329,7 +300,7 @@ export default function Example({ className, ...props }) {
                   data={data}
                   height={height}
                   interpolatedStyles={interpolatedStyles}
-                  label="Click to animate position and color at different rates"
+                  label="Click to animate color and height at different rates"
                   onClick={onFlag}
                   width={width}
                 />
