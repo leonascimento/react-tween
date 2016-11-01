@@ -1,5 +1,4 @@
-const autoprefixer = require('autoprefixer');
-const path = require('path');
+const common = require('./webpack.common.config');
 const webpack = require('webpack');
 
 module.exports = {
@@ -13,21 +12,11 @@ module.exports = {
     publicPath: '/build/',
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
-  resolve: {
-    extensions: ['', '.js', '.jsx'],
-  },
+  resolve: common.resolve,
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [path.resolve(__dirname, 'src')],
-        loaders: ['babel', 'eslint'],
-      },
-      {
-        test: /\.scss$/,
-        include: [path.resolve(__dirname, 'src')],
-        loaders: ['style', 'css?localIdentName=react-tween-[name]-[local]&modules', 'postcss', 'sass'],
-      },
+      common.module.loaders.js,
+      common.module.loaders.css,
     ],
   },
   devServer: {
@@ -36,5 +25,5 @@ module.exports = {
     inline: true,
     historyApiFallback: true,
   },
-  postcss: [autoprefixer],
+  postcss: common.postcss,
 };

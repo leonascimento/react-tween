@@ -1,7 +1,8 @@
 import React from 'react';
-import { Animation } from './Animations';
 
-const animation = React.PropTypes.instanceOf(Animation);
+const animation = React.PropTypes.shape({
+  interpolateStyle: React.PropTypes.func,
+});
 
 const transitionAnimation = React.PropTypes.shape({
   key: React.PropTypes.string,

@@ -2,11 +2,8 @@ import clamp from 'lodash.clamp';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 
-export class Animation {}
-
-export class TimingAnimation extends Animation {
+export class TimingAnimation {
   constructor({ toValue, duration = 400, easing = easeCubicInOut, delay = 0 }) {
-    super();
     this.toValue = toValue;
     this.durationWithoutDelay = duration;
     this.easing = easing;
@@ -30,9 +27,8 @@ export class TimingAnimation extends Animation {
   }
 }
 
-export class SequenceAnimation extends Animation {
+export class SequenceAnimation {
   constructor(animations) {
-    super();
     this.animations = animations;
   }
 
@@ -64,9 +60,8 @@ export class SequenceAnimation extends Animation {
   }
 }
 
-export class StaggerAnimation extends Animation {
+export class StaggerAnimation {
   constructor(stagger, animations) {
-    super();
     this.stagger = stagger;
     this.animations = animations;
   }
@@ -92,9 +87,8 @@ export class StaggerAnimation extends Animation {
   }
 }
 
-export class IdentityAnimation extends Animation {
+export class IdentityAnimation {
   constructor({ toValue }) {
-    super();
     this.toValue = toValue;
   }
 

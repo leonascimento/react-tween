@@ -1,3 +1,4 @@
+const common = require('./webpack.common.config');
 const path = require('path');
 
 module.exports = {
@@ -16,13 +17,10 @@ module.exports = {
       amd: 'react'
     },
   },
+  resolve: common.resolve,
   module: {
     loaders: [
-      {
-        test: /\.js$/,
-        include: [path.resolve(__dirname, 'src')],
-        loaders: ['babel', 'eslint'],
-      },
+      common.module.loaders.js,
     ],
   },
 };
