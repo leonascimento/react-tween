@@ -3,27 +3,41 @@ import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 
 export class TimingAnimation {
-  constructor({ toValue, duration = 500, easing = easeCubicInOut, delay = 0 }) {
+  constructor({ toValue, duration = 500, easing = easeCubicInOut }) {
     this.toValue = toValue;
-    this.durationWithoutDelay = duration;
+    this.duration = duration;
     this.easing = easing;
-    this.delay = delay;
   }
 
   interpolateStyle(startStyle, elapsed) {
     // Clamp instead of allowing overshoot because some overshoots are invalid.
     // This is especially noticeable with parallel color animations that happen at different rates
     // (some colors go to white instead of the destination value).
-    const t = clamp((elapsed - this.delay) / this.durationWithoutDelay, 0, 1);
+    const t = clamp(elapsed / this.duration, 0, 1);
     return interpolate(startStyle, this.toValue)(this.easing(t));
-  }
-
-  get duration() {
-    return this.durationWithoutDelay + this.delay;
   }
 
   get endStyle() {
     return this.toValue;
+  }
+}
+
+export class DelayAnimation {
+  constructor(delay, animation) {
+    this.delay = delay;
+    this.animation = animation;
+  }
+
+  interpolateStyle(startStyle, elapsed) {
+    return this.animation.interpolateStyle(startStyle, elapsed - this.delay);
+  }
+
+  get duration() {
+    return this.delay + this.animation.duration;
+  }
+
+  get endStyle() {
+    return this.animation.endStyle;
   }
 }
 
@@ -60,23 +74,20 @@ export class SequenceAnimation {
   }
 }
 
-export class StaggerAnimation {
-  constructor(stagger, animations) {
-    this.stagger = stagger;
+export class ParallelAnimation {
+  constructor(animations) {
     this.animations = animations;
   }
 
   interpolateStyle(startStyle, elapsed) {
-    return this.animations.reduce((result, animation, i) => ({
+    return this.animations.reduce((result, animation) => ({
       ...result,
-      ...animation.interpolateStyle(startStyle, elapsed - (this.stagger * i)),
+      ...animation.interpolateStyle(startStyle, elapsed),
     }), {});
   }
 
   get duration() {
-    return Math.max(...this.animations.map((animation, i) => (
-      animation.duration + (this.stagger * i)
-    )));
+    return Math.max(...this.animations.map(animation => animation.duration));
   }
 
   get endStyle() {
@@ -84,6 +95,26 @@ export class StaggerAnimation {
       ...result,
       ...animation.endStyle,
     }), {});
+  }
+}
+
+export class StaggerAnimation {
+  constructor(delay, animations) {
+    this.animation = new ParallelAnimation(animations.map((animation, i) => (
+      new DelayAnimation(delay * i, animation)
+    )));
+  }
+
+  interpolateStyle(startStyle, elapsed) {
+    return this.animation.interpolateStyle(startStyle, elapsed);
+  }
+
+  get duration() {
+    return this.animation.duration;
+  }
+
+  get endStyle() {
+    return this.animation.endStyle;
   }
 }
 
@@ -105,10 +136,32 @@ export class IdentityAnimation {
   }
 }
 
-export default {
-  timing: options => new TimingAnimation(options),
-  sequence: animations => new SequenceAnimation(animations),
-  parallel: animations => new StaggerAnimation(0, animations),
-  stagger: (stagger, animations) => new StaggerAnimation(stagger, animations),
-  identity: options => new IdentityAnimation(options),
-};
+export default class Animations {
+  static timing({ delay, ...options }) {
+    if (delay) {
+      return new DelayAnimation(delay, new TimingAnimation(options));
+    }
+
+    return new TimingAnimation(options);
+  }
+
+  static delay(...args) {
+    return new DelayAnimation(...args);
+  }
+
+  static sequence(...args) {
+    return new SequenceAnimation(...args);
+  }
+
+  static parallel(...args) {
+    return new ParallelAnimation(...args);
+  }
+
+  static stagger(...args) {
+    return new StaggerAnimation(...args);
+  }
+
+  static identity(...args) {
+    return new IdentityAnimation(...args);
+  }
+}

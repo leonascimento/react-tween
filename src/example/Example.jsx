@@ -2,10 +2,10 @@ import classNames from 'classnames';
 import { easeLinear } from 'd3-ease';
 import React from 'react';
 import { scaleBand } from 'd3-scale';
-import { Animations, TransitionTween, Tween } from '..';
 import BarChart from './BarChart';
 import ClickableExample from './ClickableExample';
 import styles from './Example.scss';
+import Tween from '..'; // eslint-disable-line import/no-named-as-default
 
 export default function Example({ className, ...props }) {
   const height = 100;
@@ -19,7 +19,7 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => (
           <Tween
-            animation={Animations.timing({
+            animation={Tween.timing({
               toValue: { opacity: (flag ? 0.5 : 1) },
             })}
           >
@@ -38,7 +38,7 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => (
           <Tween
-            animation={Animations.timing({
+            animation={Tween.timing({
               toValue: { opacity: (flag ? 0.5 : 1) },
               duration: 2000,
             })}
@@ -58,10 +58,9 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => (
           <Tween
-            animation={Animations.timing({
+            animation={Tween.delay(1000, Tween.timing({
               toValue: { opacity: (flag ? 0.5 : 1) },
-              delay: 1000,
-            })}
+            }))}
           >
             {style => (
               <div
@@ -78,7 +77,7 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => (
           <Tween
-            animation={Animations.timing({
+            animation={Tween.timing({
               toValue: {
                 opacity: (flag ? 0.5 : 1),
                 color: (flag ? 'skyblue' : 'orange'),
@@ -103,9 +102,9 @@ export default function Example({ className, ...props }) {
       <ClickableExample>
         {(flag, onFlag) => (
           <Tween
-            animation={Animations.sequence(
+            animation={Tween.sequence(
               (flag ? ['skyblue', 'pink'] : ['skyblue', 'orange'])
-                .map(color => Animations.timing({
+                .map(color => Tween.timing({
                   toValue: { color },
                 }))
             )}
@@ -168,11 +167,11 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <TransitionTween
+            <Tween.TransitionGroup
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
-                  animation: Animations.timing({
+                  animation: Tween.timing({
                     toValue: {
                       color: 'lightgray',
                       opacity: 1,
@@ -183,7 +182,7 @@ export default function Example({ className, ...props }) {
                   }),
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({
+              willLeave={style => Tween.timing({
                 toValue: { ...style, value: 0, opacity: 0 },
               })}
             >
@@ -198,7 +197,7 @@ export default function Example({ className, ...props }) {
                   width={width}
                 />
               )}
-            </TransitionTween>
+            </Tween.TransitionGroup>
           );
         }}
       </ClickableExample>
@@ -224,11 +223,11 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <TransitionTween
+            <Tween.TransitionGroup
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
-                  animation: Animations.timing({
+                  animation: Tween.timing({
                     toValue: {
                       color: 'lightgray',
                       opacity: 1,
@@ -239,7 +238,7 @@ export default function Example({ className, ...props }) {
                   }),
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({
+              willLeave={style => Tween.timing({
                 toValue: { ...style, value: 0, opacity: 0 },
               })}
             >
@@ -254,7 +253,7 @@ export default function Example({ className, ...props }) {
                   width={width}
                 />
               )}
-            </TransitionTween>
+            </Tween.TransitionGroup>
           );
         }}
       </ClickableExample>
@@ -282,11 +281,11 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <TransitionTween
+            <Tween.TransitionGroup
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
-                  animation: Animations.timing({
+                  animation: Tween.timing({
                     toValue: {
                       color: 'lightgray',
                       opacity: 1,
@@ -297,7 +296,7 @@ export default function Example({ className, ...props }) {
                   }),
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({
+              willLeave={style => Tween.timing({
                 toValue: { ...style, value: 0, opacity: 0 },
               })}
             >
@@ -312,7 +311,7 @@ export default function Example({ className, ...props }) {
                   width={width}
                 />
               )}
-            </TransitionTween>
+            </Tween.TransitionGroup>
           );
         }}
       </ClickableExample>
@@ -340,12 +339,12 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <TransitionTween
+            <Tween.TransitionGroup
               animations={data
                 .map(d => ({
                   key: d.index.toString(),
-                  animation: Animations.sequence([
-                    Animations.timing({
+                  animation: Tween.sequence([
+                    Tween.timing({
                       toValue: {
                         color: 'lightgray',
                         opacity: 1,
@@ -353,7 +352,7 @@ export default function Example({ className, ...props }) {
                         width: barScale.bandwidth(),
                       },
                     }),
-                    Animations.timing({
+                    Tween.timing({
                       toValue: {
                         value: d.value,
                       },
@@ -361,7 +360,7 @@ export default function Example({ className, ...props }) {
                   ]),
                 }))}
               willEnter={style => ({ ...style, value: 0, opacity: 0 })}
-              willLeave={style => Animations.timing({
+              willLeave={style => Tween.timing({
                 toValue: { ...style, value: 0, opacity: 0 },
               })}
             >
@@ -376,7 +375,7 @@ export default function Example({ className, ...props }) {
                   width={width}
                 />
               )}
-            </TransitionTween>
+            </Tween.TransitionGroup>
           );
         }}
       </ClickableExample>
@@ -403,7 +402,7 @@ export default function Example({ className, ...props }) {
             .padding(0.3);
 
           return (
-            <TransitionTween
+            <Tween.TransitionGroup
               delay={1000}
               duration={1000}
               easing={easeLinear}
@@ -432,7 +431,7 @@ export default function Example({ className, ...props }) {
                   width={width}
                 />
               )}
-            </TransitionTween>
+            </Tween.TransitionGroup>
           );
         }}
       </ClickableExample>

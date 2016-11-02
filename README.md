@@ -5,21 +5,21 @@ Tween animation for React components
 Demos
 ---
 - [Animate opacity and color with `<Tween />`](http://codepen.io/mking-clari/pen/JRqzLN)
-- [Animate bars with `<TransitionTween />`](http://codepen.io/mking-clari/pen/yadomz)
+- [Animate bars with `<Tween.TransitionGroup />`](http://codepen.io/mking-clari/pen/yadomz)
 
 Usage
 ---
 - `<Tween />` is used to animate a single value over time.
-- `<TransitionTween />` is used to animate a list of items where items are being added and removed.
+- `<Tween.TransitionGroup />` is used to animate a list of items where items are being added and removed.
 
 ```javascript
-import { Animations, TransitionTween, Tween } from 'react-tween';
+import Tween from 'react-tween';
 
 // Tween is declarative.
 // toValue defines the destination style.
 // Whenever the destination style changes, the inner component is animated to that
 // destination style.
-<Tween animation={Animations.timing({ toValue: { opacity: 1 } })}>
+<Tween animation={Tween.timing({ toValue: { opacity: 1 } })}>
   {style => (
     <div style={{ opacity: style.opacity }}>
       Animate opacity
@@ -27,27 +27,27 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
   )}
 </Tween>
 
-// TransitionTween takes the place of TransitionGroup.
-<TransitionTween
+// Tween.TransitionGroup takes the place of ReactTransitionGroup.
+<Tween.TransitionGroup
   animations={[
     {
       // The key is the child component key.
       key: '0',
       // toValue defines the destination style for this item.
-      animation: Animations.timing({ toValue: { height: 100 } }),
+      animation: Tween.timing({ toValue: { height: 100 } }),
       // The data is an arbitrary value associated with the key.
       data: '0',
     },
     {
       key: '1',
-      animation: Animations.timing({ toValue: { height: 200 } }),
+      animation: Tween.timing({ toValue: { height: 200 } }),
       data: '1',
     },
   ]}
   // The willEnter prop defines the initial style of an item when it is first added.
   willEnter={style => ({ ...style, height: 0 })}
   // The willLeave prop defines the animation of an item when it is removed.
-  willLeave={style => Animations.timing({ toValue: { ...style, height: 0 } })}
+  willLeave={style => Tween.timing({ toValue: { ...style, height: 0 } })}
 >
   {interpolatedStyles => (
     <div className="bars">
@@ -60,14 +60,14 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
       ))}
     </div>
   )}
-</TransitionTween>
+</Tween.TransitionGroup>
 
-// Both Tween and TransitionTween support customized delay, duration, and
+// Both Tween and Tween.TransitionGroup support customized delay, duration, and
 // easing.
 import { easeSinInOut } from 'd3-ease';
 
 <Tween
-  animation={Animations.timing({
+  animation={Tween.timing({
     toValue: { opacity: 1 },
     delay: 500,
     duration: 1000,
@@ -77,38 +77,38 @@ import { easeSinInOut } from 'd3-ease';
   {/* ... */}
 </Tween>
 
-// Run animations in sequence with Animations.sequence
+// Run animations in sequence with Tween.sequence
 <Tween
-  animation={Animations.sequence([
+  animation={Tween.sequence([
     // The color will first animate to green, then to red.
-    Animations.timing({ toValue: { color: 'green' } }),
-    Animations.timing({ toValue: { color: 'red' } }),
+    Tween.timing({ toValue: { color: 'green' } }),
+    Tween.timing({ toValue: { color: 'red' } }),
   ])}
 >
   {/* ... */}
 </Tween>
 
-// Run animations in parallel with Animations.parallel
+// Run animations in parallel with Tween.parallel
 <Tween
-  animation={Animations.parallel([
-    Animations.timing({ toValue: { color: 'orange' } }),
-    Animations.timing({ toValue: { opacity: 1 } }),
+  animation={Tween.parallel([
+    Tween.timing({ toValue: { color: 'orange' } }),
+    Tween.timing({ toValue: { opacity: 1 } }),
   ])}
 >
   {/* ... */}
 </Tween>
 
-// Stagger animations with Animations.stagger
+// Stagger animations with Tween.stagger
 <Tween
-  animation={Animations.stagger(500, [
+  animation={Tween.stagger(500, [
     // First, the color will animate to orange.
     // When the color is halfway to orange, the opacity will begin animating
     // to 1.
-    Animations.timing({
+    Tween.timing({
       toValue: { color: 'orange' },
       duration: 1000,
     }),
-    Animations.timing({
+    Tween.timing({
       toValue: { opacity: 1 },
       duration: 1000,
     }),
@@ -120,8 +120,8 @@ import { easeSinInOut } from 'd3-ease';
 
 Implementation
 ---
-- The structure of the `<Tween />` and `<TransitionTween />` components is based on [react-motion](https://github.com/chenglou/react-motion).
-- The `Animations` API is based on [React Native's animation API](https://facebook.github.io/react-native/docs/animations.html).
+- The structure of the `<Tween />` and `<Tween.TransitionGroup />` components is based on [react-motion](https://github.com/chenglou/react-motion).
+- The animation API is based on [React Native's animation API](https://facebook.github.io/react-native/docs/animations.html).
 - The animation is implemented using [d3's interpolation, easing, and timer](https://d3js.org). Any value d3 can interpolate, `react-tween` can interpolate.
 
 Comparison to `react-motion`
