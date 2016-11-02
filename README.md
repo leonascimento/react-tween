@@ -47,7 +47,7 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
   // The willEnter prop defines the initial style of an item when it is first added.
   willEnter={style => ({ ...style, height: 0 })}
   // The willLeave prop defines the animation of an item when it is removed.
-  willLeave={style => Animation.timing({ toValue: { ...style, height: 0 } })}
+  willLeave={style => Animations.timing({ toValue: { ...style, height: 0 } })}
 >
   {styles => (
     <div className="bars">
