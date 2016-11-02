@@ -3,7 +3,7 @@ import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 
 export class TimingAnimation {
-  constructor({ toValue, duration = 400, easing = easeCubicInOut, delay = 0 }) {
+  constructor({ toValue, duration = 500, easing = easeCubicInOut, delay = 0 }) {
     this.toValue = toValue;
     this.durationWithoutDelay = duration;
     this.easing = easing;
