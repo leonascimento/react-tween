@@ -49,9 +49,9 @@ import { Animations, TransitionTween, Tween } from 'react-tween';
   // The willLeave prop defines the animation of an item when it is removed.
   willLeave={style => Animations.timing({ toValue: { ...style, height: 0 } })}
 >
-  {styles => (
+  {interpolatedStyles => (
     <div className="bars">
-      {styles.map(style => (
+      {interpolatedStyles.map(style => (
         <div
           className="bar"
           key={style.key}
