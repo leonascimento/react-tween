@@ -15,12 +15,11 @@ export default function Tween({
   if (style) {
     return (
       <AnimationTween
-        animation={Animations.timing({
+        animation={Animations.delay(delay, Animations.timing({
           toValue: style,
-          delay,
           duration,
           easing,
-        })}
+        }))}
         {...props}
       >
         {children}
@@ -45,4 +44,8 @@ Tween.propTypes = {
   duration: React.PropTypes.number,
   easing: React.PropTypes.func,
   style: PropTypes.style,
+};
+
+Tween.defaultProps = {
+  delay: 0,
 };

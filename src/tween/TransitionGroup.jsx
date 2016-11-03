@@ -19,21 +19,19 @@ export default function TransitionGroup({
       <AnimationTransitionGroup
         animations={styles.map(style => ({
           key: style.key,
-          animation: Animations.timing({
+          animation: Animations.delay(delay, Animations.timing({
             toValue: style.style,
-            delay,
             duration,
             easing,
-          }),
+          })),
           data: style.data,
         }))}
         willEnter={willEnter}
-        willLeave={style => Animations.timing({
+        willLeave={style => Animations.delay(delay, Animations.timing({
           toValue: (willLeave ? willLeave(style) : {}),
-          delay,
           duration,
           easing,
-        })}
+        }))}
         {...props}
       >
         {children}
@@ -62,4 +60,8 @@ TransitionGroup.propTypes = {
   styles: React.PropTypes.arrayOf(PropTypes.transitionStyle),
   willEnter: React.PropTypes.func,
   willLeave: React.PropTypes.func,
+};
+
+TransitionGroup.defaultProps = {
+  delay: 0,
 };

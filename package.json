@@ -1,6 +1,6 @@
 {
   "name": "react-tween",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
@@ -26,7 +26,8 @@
     "d3-ease": "^1.0.0",
     "d3-interpolate": "^1.0.0",
     "d3-timer": "^1.0.0",
-    "lodash.clamp": "^4.0.0"
+    "lodash.clamp": "^4.0.0",
+    "warning": "^3.0.0"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0"

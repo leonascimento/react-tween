@@ -1,6 +1,7 @@
 import clamp from 'lodash.clamp';
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
+import warning from 'warning';
 
 export class TimingAnimation {
   constructor({ toValue, duration = 500, easing = easeCubicInOut }) {
@@ -14,6 +15,7 @@ export class TimingAnimation {
     // This is especially noticeable with parallel color animations that happen at different rates
     // (some colors go to white instead of the destination value).
     const t = clamp(elapsed / this.duration, 0, 1);
+
     return interpolate(startStyle, this.toValue)(this.easing(t));
   }
 
@@ -139,6 +141,8 @@ export class IdentityAnimation {
 export default class Animations {
   static timing({ delay, ...options }) {
     if (delay) {
+      warning(false, 'Use Tween.delay instead of Tween.timing({ delay })');
+
       return new DelayAnimation(delay, new TimingAnimation(options));
     }
 
