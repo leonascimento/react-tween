@@ -1,9 +1,9 @@
 import React from 'react';
 import Animations from './Animations';
+import AnimationTransitionGroup from './AnimationTransitionGroup';
 import PropTypes from './PropTypes';
-import TransitionTween from './TransitionTween';
 
-export default function CompatibleTransitionTween({
+export default function TransitionGroup({
   animations,
   children,
   delay,
@@ -16,7 +16,7 @@ export default function CompatibleTransitionTween({
 }) {
   if (styles) {
     return (
-      <TransitionTween
+      <AnimationTransitionGroup
         animations={styles.map(style => ({
           key: style.key,
           animation: Animations.timing({
@@ -37,23 +37,23 @@ export default function CompatibleTransitionTween({
         {...props}
       >
         {children}
-      </TransitionTween>
+      </AnimationTransitionGroup>
     );
   }
 
   return (
-    <TransitionTween
+    <AnimationTransitionGroup
       animations={animations}
       willEnter={willEnter}
       willLeave={willLeave}
       {...props}
     >
       {children}
-    </TransitionTween>
+    </AnimationTransitionGroup>
   );
 }
 
-CompatibleTransitionTween.propTypes = {
+TransitionGroup.propTypes = {
   animations: React.PropTypes.arrayOf(PropTypes.transitionAnimation),
   children: React.PropTypes.func,
   delay: React.PropTypes.number,

@@ -1,22 +1,48 @@
 import React from 'react';
+import Animations from './Animations';
+import AnimationTween from './AnimationTween';
 import PropTypes from './PropTypes';
-import TransitionTween from './TransitionTween';
 
-export default function Tween({ animation, children, ...props }) {
+export default function Tween({
+  animation,
+  children,
+  delay,
+  duration,
+  easing,
+  style,
+  ...props
+}) {
+  if (style) {
+    return (
+      <AnimationTween
+        animation={Animations.timing({
+          toValue: style,
+          delay,
+          duration,
+          easing,
+        })}
+        {...props}
+      >
+        {children}
+      </AnimationTween>
+    );
+  }
+
   return (
-    <TransitionTween
-      animations={[{
-        key: '0',
-        animation,
-      }]}
+    <AnimationTween
+      animation={animation}
       {...props}
     >
-      {styles => children(styles[0].style)}
-    </TransitionTween>
+      {children}
+    </AnimationTween>
   );
 }
 
 Tween.propTypes = {
   animation: PropTypes.animation,
   children: React.PropTypes.func,
+  delay: React.PropTypes.number,
+  duration: React.PropTypes.number,
+  easing: React.PropTypes.func,
+  style: PropTypes.style,
 };

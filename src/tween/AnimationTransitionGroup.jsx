@@ -4,7 +4,7 @@ import Animations from './Animations';
 import mergeDiff from './mergeDiff';
 import PropTypes from './PropTypes';
 
-export default class TransitionTween extends React.Component {
+export default class AnimationTransitionGroup extends React.Component {
   static propTypes = {
     animations: React.PropTypes.arrayOf(PropTypes.transitionAnimation),
     children: React.PropTypes.func,
