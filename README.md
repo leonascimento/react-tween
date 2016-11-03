@@ -62,14 +62,13 @@ import Tween from 'react-tween';
   )}
 </Tween.TransitionGroup>
 
-// Both Tween and Tween.TransitionGroup support customized delay, duration, and
+// Both Tween and Tween.TransitionGroup support customized duration and
 // easing.
 import { easeSinInOut } from 'd3-ease';
 
 <Tween
   animation={Tween.timing({
     toValue: { opacity: 1 },
-    delay: 500,
     duration: 1000,
     easing: easeSinInOut,
   })}
@@ -94,6 +93,13 @@ import { easeSinInOut } from 'd3-ease';
     Tween.timing({ toValue: { color: 'orange' } }),
     Tween.timing({ toValue: { opacity: 1 } }),
   ])}
+>
+  {/* ... */}
+</Tween>
+
+// Delay animations with Tween.delay
+<Tween
+  animation={Tween.delay(500, Tween.timing({ toValue: { opacity: 1 } }))}
 >
   {/* ... */}
 </Tween>
