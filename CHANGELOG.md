@@ -5,12 +5,8 @@ Reduce exported API to a single name, `Tween`.
 ```javascript
 <Tween
   animation={Tween.sequence([
-    Tween.timing({
-      toValue: { color: 'red' },
-    }),
-    Tween.timing({
-      toValue: { color: 'green' },
-    }),
+    Tween.timing({ toValue: { color: 'red' } }),
+    Tween.timing({ toValue: { color: 'green' } }),
   ])}
 >
   {style => /* ... */}
@@ -39,12 +35,8 @@ Add support for sequential and parallel animations.
 ```javascript
 <Tween
   animation={Animations.sequence([
-    Animations.timing({
-      toValue: { color: 'red' },
-    }),
-    Animations.timing({
-      toValue: { color: 'green' },
-    }),
+    Animations.timing({ toValue: { color: 'red' } }),
+    Animations.timing({ toValue: { color: 'green' } }),
   ])}
 >
   {style => /* ... */}
