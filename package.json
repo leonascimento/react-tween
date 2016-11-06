@@ -1,10 +1,10 @@
 {
   "name": "react-tween",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
-  "main": "lib/index",
+  "main": "lib",
   "files": [
     "dist",
     "lib"
@@ -19,8 +19,9 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.config.js",
-    "build": "rm -rf dist && NODE_ENV=production webpack --config webpack.build.config.js",
-    "prepublish": "rm -rf lib && babel src --out-dir lib --only tween,index && npm run build"
+    "build-dist": "rm -rf dist && NODE_ENV=production webpack --config webpack.build.config.js",
+    "build-lib": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --only tween,index",
+    "prepublish": "npm run build-lib && npm run build-dist"
   },
   "dependencies": {
     "d3-ease": "^1.0.0",
