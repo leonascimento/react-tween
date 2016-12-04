@@ -1,0 +1,18 @@
+.bar {
+  fill: lightgray;
+}
+
+.example {
+  background-color: orange;
+  flex-shrink: 0;
+
+  &:not(:first-child) {
+    margin-top: 100px;
+  }
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  margin: 100px;
+}

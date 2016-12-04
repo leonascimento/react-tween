@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
 import ClickableExample from './ClickableExample';
-import styles from './Example.scss';
+import styles from './NestedTweenExample.scss';
 import Tween from './Tween';
 
-export default function Example({ className, ...props }) {
+export default function NestedTweenExample({ className, ...props }) {
   return (
     <div
       className={classNames(styles.examples, className)}
@@ -46,6 +46,6 @@ export default function Example({ className, ...props }) {
   );
 }
 
-Example.propTypes = {
+NestedTweenExample.propTypes = {
   className: React.PropTypes.string,
 };
