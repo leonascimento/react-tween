@@ -67,10 +67,13 @@ export default function RescaleAxisExample({ className, ...props }) {
             .range([0, width])
             .padding(0.5);
 
+          const createBarHeightScale = maxBarValue => (
+            scaleLinear()
+              .domain([0, 1.2 * maxBarValue])
+              .range([0, height])
+          );
           const maxBarValue = Math.max(...bars.map(bar => bar.value));
-          const barHeightScale = scaleLinear()
-            .domain([0, 1.2 * maxBarValue])
-            .range([0, height]);
+          const barHeightScale = createBarHeightScale(maxBarValue);
           const barHeightTicks = barHeightScale.ticks(10)
             .filter(tick => tick !== 0);
 
@@ -86,9 +89,7 @@ export default function RescaleAxisExample({ className, ...props }) {
                 style={{ maxBarValue }}
               >
                 {({ maxBarValue: interpolatedMaxBarValue }) => {
-                  const interpolatedBarHeightScale = scaleLinear()
-                    .domain([0, 1.2 * interpolatedMaxBarValue])
-                    .range([0, height]);
+                  const interpolatedBarHeightScale = createBarHeightScale(interpolatedMaxBarValue);
 
                   return (
                     <TransitionGroup
