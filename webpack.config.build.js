@@ -1,12 +1,12 @@
-const common = require('./webpack.common.config');
+const common = require('./webpack.config.common');
 const path = require('path');
 
 module.exports = {
   entry: './src/index',
   output: {
-    filename: 'react-tween.js',
+    filename: 'redux-animate.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'ReactTween',
+    library: 'ReduxAnimate',
     libraryTarget: 'umd',
   },
   externals: {

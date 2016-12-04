@@ -15,7 +15,7 @@ module.exports = {
       css: {
         test: /\.scss$/,
         include: [path.resolve(__dirname, 'src')],
-        loaders: ['style', 'css?localIdentName=react-tween-[name]-[local]&modules', 'postcss', 'sass'],
+        loaders: ['style', 'css?localIdentName=redux-animate-[name]-[local]&modules', 'postcss', 'sass'],
       },
     },
   },

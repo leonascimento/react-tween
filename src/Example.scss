@@ -1,0 +1,20 @@
+.example {
+  align-items: center;
+  background-color: orange;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  height: 100px;
+  justify-content: center;
+  width: 100px;
+
+  &:not(:first-child) {
+    margin-top: 100px;
+  }
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  margin: 100px;
+}

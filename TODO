@@ -1,2 +1,0 @@
-- Nested tweens are not working correctly. I think this is because the animation is triggered on componentWillReceiveProps.
-- I think the original API is better for most cases.
