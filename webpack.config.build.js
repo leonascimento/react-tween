@@ -4,9 +4,9 @@ const path = require('path');
 module.exports = {
   entry: './src/index',
   output: {
-    filename: 'redux-animate.js',
+    filename: 'react-tween.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'ReduxAnimate',
+    library: 'ReactTween',
     libraryTarget: 'umd',
   },
   externals: {
@@ -14,7 +14,7 @@ module.exports = {
       root: 'React',
       commonjs2: 'react',
       commonjs: 'react',
-      amd: 'react'
+      amd: 'react',
     },
   },
   resolve: common.resolve,
