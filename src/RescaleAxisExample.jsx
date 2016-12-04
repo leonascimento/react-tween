@@ -78,20 +78,20 @@ export default function RescaleAxisExample({ className, ...props }) {
             .filter(tick => tick !== 0);
 
           return (
-            <svg
-              className={styles.example}
-              height={height + (margin.top + margin.bottom)}
-              onClick={onClick}
-              width={width + (margin.left + margin.right)}
+            <Tween
+              group={counter}
+              style={{ maxBarValue }}
             >
-              <Tween
-                group={counter}
-                style={{ maxBarValue }}
-              >
-                {({ maxBarValue: interpolatedMaxBarValue }) => {
-                  const interpolatedBarHeightScale = createBarHeightScale(interpolatedMaxBarValue);
+              {({ maxBarValue: interpolatedMaxBarValue }) => {
+                const interpolatedBarHeightScale = createBarHeightScale(interpolatedMaxBarValue);
 
-                  return (
+                return (
+                  <svg
+                    className={styles.example}
+                    height={height + (margin.top + margin.bottom)}
+                    onClick={onClick}
+                    width={width + (margin.left + margin.right)}
+                  >
                     <TransitionGroup
                       group={counter}
                       styles={barHeightTicks.map(tick => ({
@@ -128,58 +128,58 @@ export default function RescaleAxisExample({ className, ...props }) {
                         </g>
                       )}
                     </TransitionGroup>
-                  );
-                }}
-              </Tween>
-              <line
-                className={styles.line}
-                x1={margin.left}
-                x2={margin.left}
-                y1={0}
-                y2={height + (margin.top + margin.bottom)}
-              />
-              <TransitionGroup
-                group={counter}
-                styles={bars.map(bar => ({
-                  key: bar.key,
-                  style: {
-                    height: barHeightScale(bar.value),
-                    position: barPositionScale(bar.key),
-                    width: barPositionScale.bandwidth(),
-                    opacity: 1,
-                  },
-                  data: bar,
-                }))}
-                willEnter={style => ({
-                  ...style,
-                  height: 0.5 * style.height,
-                  opacity: 0,
-                })}
-                willLeave={style => ({
-                  ...style,
-                  height: 0.5 * style.height,
-                  opacity: 0,
-                })}
-              >
-                {interpolatedStyles => (
-                  <g transform={`translate(${margin.left},${margin.top})`}>
-                    {interpolatedStyles.map(style => (
-                      <g
-                        key={style.key}
-                        transform={`translate(${style.style.position},${height - style.style.height})`}
-                      >
-                        <rect
-                          className={styles.bar}
-                          height={style.style.height}
-                          style={{ opacity: style.style.opacity }}
-                          width={style.style.width}
-                        />
-                      </g>
-                    ))}
-                  </g>
-                )}
-              </TransitionGroup>
-            </svg>
+                    <line
+                      className={styles.line}
+                      x1={margin.left}
+                      x2={margin.left}
+                      y1={0}
+                      y2={height + (margin.top + margin.bottom)}
+                    />
+                    <TransitionGroup
+                      group={counter}
+                      styles={bars.map(bar => ({
+                        key: bar.key,
+                        style: {
+                          height: barHeightScale(bar.value),
+                          position: barPositionScale(bar.key),
+                          width: barPositionScale.bandwidth(),
+                          opacity: 1,
+                        },
+                        data: bar,
+                      }))}
+                      willEnter={style => ({
+                        ...style,
+                        height: 0.5 * style.height,
+                        opacity: 0,
+                      })}
+                      willLeave={style => ({
+                        ...style,
+                        height: 0.5 * style.height,
+                        opacity: 0,
+                      })}
+                    >
+                      {interpolatedStyles => (
+                        <g transform={`translate(${margin.left},${margin.top})`}>
+                          {interpolatedStyles.map(style => (
+                            <g
+                              key={style.key}
+                              transform={`translate(${style.style.position},${height - style.style.height})`}
+                            >
+                              <rect
+                                className={styles.bar}
+                                height={style.style.height}
+                                style={{ opacity: style.style.opacity }}
+                                width={style.style.width}
+                              />
+                            </g>
+                          ))}
+                        </g>
+                      )}
+                    </TransitionGroup>
+                  </svg>
+                );
+              }}
+            </Tween>
           );
         }}
       </ClickableExample>
