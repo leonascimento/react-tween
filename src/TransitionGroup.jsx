@@ -20,8 +20,8 @@ export default class TransitionGroup extends React.Component {
   static defaultProps = {
     duration: 500,
     easing: easeCubicInOut,
-    willEnter: style => style,
-    willLeave: style => style,
+    willEnter: style => style.style,
+    willLeave: style => style.style,
   };
 
   constructor(props) {

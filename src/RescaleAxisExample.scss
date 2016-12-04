@@ -1,0 +1,28 @@
+.bar {
+  fill: lightgray;
+}
+
+.barHeightTick {
+  dominant-baseline: central;
+  fill: black;
+  font-size: 14px;
+  text-anchor: end;
+}
+.example {
+  background-color: orange;
+  flex-shrink: 0;
+
+  &:not(:first-child) {
+    margin-top: 100px;
+  }
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  margin: 100px;
+}
+
+.line {
+  stroke: black;
+}
