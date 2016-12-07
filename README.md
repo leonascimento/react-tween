@@ -2,10 +2,67 @@ react-tween
 ===
 Tween animation for React components
 
-The idea is to bring CSS transitions into the React world. The nice thing about CSS transitions is that they are declarative. If a value changes, the value is automatically animated to the new value. With `react-tween`, if you have a prop that you want to animate, you can take the component you want to animate, wrap it in a `Tween`, and you're done.
+Let's say you have a bar chart where each bar is an SVG `rect`. We want to animate the `rect` `fill` from red to blue. What's the ideal API for this?
 
-Usage
+Here's the unanimated component.
+
+```javascript
+function BarChart({ color, ...props }) {
+  return (
+    <rect
+      fill={color}
+      height={100}
+      width={30}
+      {...props}
+    />
+  );
+}
+```
+
+Now let's animate it with `react-tween`. To do this, wrap the original component with a `Tween` that identifies which prop is animated.
+
+```javascript
+function BarChart({ color, ...props }) {
+  return (
+    <Tween
+      style={{ color }}
+    >
+      {style => (
+        <rect
+          fill={style.color}
+          height={100}
+          width={30}
+          {...props}
+        />
+      )}
+  );
+}
+```
+
+When the color prop is set to blue, the inner rect's color is animated from its previous color to blue.
+
+API
 ---
+```javascript
+import { easeCubicInOut } from 'd3-ease';
+import Tween from 'react-tween';
+
+function BarChart({ color, ...props }) {
+  return (
+    <Tween
+      easing={easeCubicInOut}
+      duration={500}
+      style={{ color }}
+    >
+      {style => (
+        <rect
+          fill={style.color}
+        />
+      )}
+    </Tween>
+  );
+}
+```
 
 Comparison to `react-motion`
 ---
