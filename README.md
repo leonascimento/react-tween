@@ -65,7 +65,7 @@ function Bar({ color, ...props }) {
 TransitionGroup
 ---
 
-If you have a collection of items and you want to apply styles to items that are added or removed, you can use `Tween.TransitionGroup` instead of `Tween`.
+If you want to animate items added or removed from a collection, you can use `Tween.TransitionGroup`.
 
 `Tween.TransitionGroup` accepts a list of styles instead of a single style. Each style has a key that is used to determine if a child has been added or removed (similar to React child keys).
 
