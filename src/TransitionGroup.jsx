@@ -1,5 +1,7 @@
 import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
+import isEqual from 'lodash.isequal';
+import isUndefined from 'lodash.isundefined';
 import now from 'performance-now';
 import React from 'react';
 import { timer } from 'd3-timer';
@@ -43,7 +45,11 @@ export default class TransitionGroup extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.group === nextProps.group) {
+    if (
+      isUndefined(nextProps.group) ?
+        isEqual(this.props.styles, nextProps.styles) :
+        this.props.group === nextProps.group
+    ) {
       return;
     }
 

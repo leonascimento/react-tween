@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './global.scss';
 import NestedTweenExample from './NestedTweenExample';
-import RescaleAxisExample from './RescaleAxisExample';
 import TransitionGroupExample from './TransitionGroupExample';
 
 ReactDOM.render(
@@ -12,7 +11,6 @@ ReactDOM.render(
     <Route path="/">
       <IndexRoute component={NestedTweenExample} />
       <Route path="transition-group" component={TransitionGroupExample} />
-      <Route path="rescale-axis" component={RescaleAxisExample} />
     </Route>
   </Router>,
   document.getElementById('content')

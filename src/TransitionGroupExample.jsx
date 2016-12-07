@@ -66,7 +66,6 @@ export default function TransitionGroupExample({ className, ...props }) {
 
           return (
             <TransitionGroup
-              group={counter}
               styles={bars.map(bar => ({
                 key: bar.key,
                 style: {

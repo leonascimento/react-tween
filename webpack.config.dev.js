@@ -11,7 +11,9 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/build/',
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+  ],
   resolve: common.resolve,
   module: {
     loaders: [
