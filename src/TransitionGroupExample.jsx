@@ -13,8 +13,8 @@ export default function TransitionGroupExample({ className, ...props }) {
     >
       <ClickableExample>
         {({ counter, onClick }) => {
-          const width = 400;
-          const height = 200;
+          const width = 300;
+          const height = 300;
 
           const bars = counter % 2 === 0
             ? [

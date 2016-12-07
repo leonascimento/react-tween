@@ -2,7 +2,10 @@ react-tween
 ===
 Tween animation for React components
 
-Let's say you have a bar chart where each bar is an SVG `rect`. We want to animate the `rect` `fill` from red to blue. What's the ideal API for this?
+Tween
+---
+
+Let's say you have a bar chart where each bar is an SVG `rect`. We want to animate the `rect` color from red to blue. What's the ideal API for this?
 
 Here's the unanimated component.
 
@@ -39,27 +42,72 @@ function BarChart({ color, ...props }) {
 }
 ```
 
-When the color prop is set to blue, the inner rect's color is animated from its previous color to blue.
+When the color prop is set to blue, the rect color is animated from its previous color to blue.
 
-API
----
+If you want to customize the easing or duration, you can do this.
+
 ```javascript
 import { easeCubicInOut } from 'd3-ease';
-import Tween from 'react-tween';
 
-function BarChart({ color, ...props }) {
+function Bar({ color, ...props }) {
   return (
     <Tween
       easing={easeCubicInOut}
       duration={500}
       style={{ color }}
     >
-      {style => (
-        <rect
-          fill={style.color}
-        />
-      )}
+      {/* ... */}
     </Tween>
+  );
+}
+```
+
+TransitionGroup
+---
+
+If you have a collection of items and you want to apply styles to items that are added or removed, you can use `Tween.TransitionGroup` instead of `Tween`.
+
+`Tween.TransitionGroup` accepts a list of styles instead of a single style. Each style has a key that is used to determine if a child has been added or removed (similar to React child keys).
+
+```javascript
+function BarChart({ users, ...props }) {
+  return (
+    <Tween.TransitionGroup
+      styles={users.map(user => ({
+        key: user.id,
+        style: {
+          opacity: 1,
+        },
+        data: user,
+      }))}
+      willEnter={style => ({ ...style, opacity: 0 })}
+      willLeave={style => ({ ...style, opacity: 0 })}
+    >
+      {styles => styles.map(style => (
+        <rect
+          fill={style.style.color}
+          key={style.key}
+        />
+      ))}
+    </Tween.TransitionGroup>
+  );
+}
+```
+
+You can also set easing and duration on `Tween.TransitionGroup`.
+
+```javascript
+import { easeCubicInOut } from 'd3-ease';
+
+function BarChart({ users, ...props }) {
+  return (
+    <Tween.TransitionGroup
+      easing={easeCubicInOut}
+      duration={500}
+      {...props}
+    >
+      {/* ... */}
+    </Tween.TransitionGroup>
   );
 }
 ```
