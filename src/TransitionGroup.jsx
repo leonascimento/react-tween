@@ -47,7 +47,18 @@ export default class TransitionGroup extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (
       isUndefined(nextProps.group) ?
-        isEqual(this.props.styles, nextProps.styles) :
+        // Don't animate if the new end styles are the same as the old end styles.
+        // This prevents nested tweens from constantly restarting their animation because they keep receiving new props.
+        isEqual(
+          this.state.styles.map(style => ({
+            key: style.key,
+            style: style.endStyle,
+          })),
+          nextProps.styles.map(style => ({
+            key: style.key,
+            style: style.style,
+          }))
+        ) :
         this.props.group === nextProps.group
     ) {
       return;
