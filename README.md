@@ -7,7 +7,7 @@ Tween animation for React components
 Tween
 ---
 
-Let's say you have a bar chart where each bar is an SVG `rect`. We want to animate the `rect` color from red to blue. What's the ideal API for this?
+Let's say you have a bar chart. We want to animate the bar color from red to blue. What's the ideal API for this?
 
 Here's the unanimated component.
 
@@ -24,7 +24,7 @@ function BarChart({ color, ...props }) {
 }
 ```
 
-Now let's animate it with `react-tween`. To do this, wrap the original component with a `Tween` that identifies which prop is animated.
+Now let's animate the color prop with `react-tween`. To do this, wrap the original component with a `Tween`.
 
 ```javascript
 function BarChart({ color, ...props }) {
@@ -40,6 +40,7 @@ function BarChart({ color, ...props }) {
           {...props}
         />
       )}
+    </Tween>
   );
 }
 ```
