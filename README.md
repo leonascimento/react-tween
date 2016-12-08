@@ -88,8 +88,8 @@ function BarChart({ users, ...props }) {
     >
       {styles => styles.map(style => (
         <rect
-          fill={style.style.color}
           key={style.key}
+          style={{ opacity: style.style.opacity }}
         />
       ))}
     </Tween.TransitionGroup>
