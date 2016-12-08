@@ -1,19 +1,30 @@
 .example {
-  align-items: center;
-  background-color: orange;
-  display: flex;
+  background-color: #FF851B;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
   font-size: 14px;
   height: 100px;
   justify-content: center;
+  padding: 10px;
+  text-align: center;
   width: 100px;
+
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.row {
+  display: flex;
+  flex-shrink: 0;
 
   &:not(:first-child) {
     margin-top: 20px;
   }
 }
 
-.examples {
+.rows {
   display: flex;
   flex-direction: column;
   margin: 20px;
