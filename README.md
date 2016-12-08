@@ -97,6 +97,8 @@ function BarChart({ users, ...props }) {
 }
 ```
 
+`willEnter` defines the initial style for newly added items. `willLeave` defines the final style for removed items.
+
 You can also set easing and duration on `Tween.TransitionGroup`.
 
 ```javascript
