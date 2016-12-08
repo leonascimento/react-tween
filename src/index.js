@@ -3,4 +3,4 @@ import Tween from './Tween';
 
 Tween.TransitionGroup = TransitionGroup;
 
-export default Tween;
+module.exports = Tween;

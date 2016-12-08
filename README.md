@@ -2,6 +2,8 @@ react-tween
 ===
 Tween animation for React components
 
+[Demo](http://codepen.io/mking-clari/pen/XNYbJX)
+
 Tween
 ---
 
@@ -112,9 +114,51 @@ function BarChart({ users, ...props }) {
 }
 ```
 
+Synchronizing Animations
+---
+
+Let's say you have animations in two separate parts of the component tree and you want to kick them off simultaneously. You can do this with the `group` prop. All animations with the same `group` prop start animating at the same time.
+
+```javascript
+function BarChart({ requestCounter, ...props }) {
+  return (
+    <Tween.TransitionGroup
+      group={requestCounter}
+      styles={/* ... */}
+      {...props}
+    >
+      {/* ... */}
+    </Tween.TransitionGroup>
+  );
+}
+
+function LineChart({ requestCounter, ...props }) {
+  return (
+    <Tween.TransitionGroup
+      group={requestCounter}
+      styles={/* ... */}
+      {...props}
+    >
+      {/* ... */}
+    </Tween.TransitionGroup>
+  );
+}
+
+function Chart({ requestCounter, ...props }) {
+  return (
+    <g {...props}>
+      <BarChart requestCounter={requestCounter} />
+      <LineChart requestCounter={requestCounter} />
+    </g>
+  );
+}
+```
+
 Comparison to `react-motion`
 ---
-I think the API of `react-motion` is ideal, which is why this library is modelled after it. However, I don't think spring animation covers all cases. For example, the designer may require a specific duration, or may want to disallow bouncing. In this case, tween animation can be used.
+Choose `react-tween` or `react-motion` based on whether you want tween or spring animation.
+- If you need natural, physical motion, use spring animation.
+- If you need to specify a duration, or you do not want a bounce, use tween animation.
 
 Setup
 ---

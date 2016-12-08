@@ -54,14 +54,14 @@ export default function TransitionGroupExample({ className, ...props }) {
               },
             ];
 
-          const barPositionScale = scaleBand()
+          const xScale = scaleBand()
             .domain(bars.map(bar => bar.key))
             .range([0, width])
             .padding(0.5);
 
-          const maxBarValue = Math.max(...bars.map(bar => bar.value));
-          const barHeightScale = scaleLinear()
-            .domain([0, 1.2 * maxBarValue])
+          const maxValue = Math.max(...bars.map(bar => bar.value));
+          const yScale = scaleLinear()
+            .domain([0, 1.2 * maxValue])
             .range([0, height]);
 
           return (
@@ -69,9 +69,9 @@ export default function TransitionGroupExample({ className, ...props }) {
               styles={bars.map(bar => ({
                 key: bar.key,
                 style: {
-                  height: barHeightScale(bar.value),
-                  position: barPositionScale(bar.key),
-                  width: barPositionScale.bandwidth(),
+                  height: yScale(bar.value),
+                  position: xScale(bar.key),
+                  width: xScale.bandwidth(),
                   opacity: 1,
                 },
                 data: bar,
