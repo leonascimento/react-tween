@@ -110,6 +110,7 @@ function BarChart({ users, ...props }) {
     <Tween.TransitionGroup
       easing={easeCubicInOut}
       duration={500}
+      styles={/* ... */}
       {...props}
     >
       {/* ... */}
