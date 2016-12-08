@@ -51,7 +51,7 @@ If you want to customize the easing or duration, you can pass additional options
 ```javascript
 import { easeCubicInOut } from 'd3-ease';
 
-function Bar({ color, ...props }) {
+function BarChart({ color, ...props }) {
   return (
     <Tween
       easing={easeCubicInOut}
