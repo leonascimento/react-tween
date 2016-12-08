@@ -98,7 +98,7 @@ function BarChart({ users, ...props }) {
 }
 ```
 
-In the above example, items fade in (animate from opacity 0) when added and fade out (animate to opacity 0) when removed.
+In the above example, items fade in when added (animate from opacity 0) and fade out when removed (animate to opacity 0).
 
 You can also set easing and duration on `Tween.TransitionGroup`.
 
