@@ -47,7 +47,7 @@ function BarChart({ color, ...props }) {
 
 When the color prop is set to blue, the rect color is animated from its previous color to blue.
 
-If you want to customize the easing or duration, you can pass additional options.
+If you want to customize easing, duration, or delay, you can pass additional options.
 
 ```javascript
 import { easeCubicInOut } from 'd3-ease';
@@ -56,6 +56,7 @@ function BarChart({ color, ...props }) {
   return (
     <Tween
       easing={easeCubicInOut}
+      delay={1000}
       duration={500}
       style={{ color }}
     >

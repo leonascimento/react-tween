@@ -2,7 +2,6 @@ import { easeCubicInOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
 import isEqual from 'lodash.isequal';
 import isUndefined from 'lodash.isundefined';
-import now from 'performance-now';
 import React from 'react';
 import { timer } from 'd3-timer';
 import mergeDiff from './mergeDiff';
@@ -11,6 +10,7 @@ import toObject from './toObject';
 export default class TransitionGroup extends React.Component {
   static propTypes = {
     children: React.PropTypes.func,
+    delay: React.PropTypes.number,
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
     group: React.PropTypes.any, // eslint-disable-line react/forbid-prop-types
@@ -20,6 +20,7 @@ export default class TransitionGroup extends React.Component {
   };
 
   static defaultProps = {
+    delay: 0,
     duration: 500,
     easing: easeCubicInOut,
     willEnter: style => style.style,
@@ -109,8 +110,9 @@ export default class TransitionGroup extends React.Component {
   }
 
   startTimer() {
-    this.startTime = now();
-    this.timer.restart(() => this.update());
+    const { delay } = this.props;
+
+    this.timer.restart(elapsed => this.update(elapsed), delay);
   }
 
   stopTimer() {
@@ -124,11 +126,10 @@ export default class TransitionGroup extends React.Component {
     });
   }
 
-  update() {
+  update(elapsed) {
     const { duration, easing } = this.props;
 
-    const currentTime = now();
-    const t = (currentTime - this.startTime) / duration;
+    const t = elapsed / duration;
     const easedTime = easing(t);
     if (easedTime > 0.99) {
       this.stopTimer();
