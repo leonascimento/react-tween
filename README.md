@@ -7,7 +7,7 @@ Tween animation for React components
 Tween
 ---
 
-Let's say you have a bar chart. We want to animate the bar color from red to blue. What's the ideal API for this?
+Let's say you have a bar chart. You want to animate the bar color from red to blue. What's the ideal API for this?
 
 Here's the unanimated component.
 
