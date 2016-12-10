@@ -58,6 +58,7 @@ function BarChart({ color, ...props }) {
       easing={easeCubicInOut}
       delay={1000}
       duration={500}
+      onEnd={() => alert('Done!')}
       style={{ color }}
     >
       {/* ... */}
@@ -65,6 +66,8 @@ function BarChart({ color, ...props }) {
   );
 }
 ```
+
+`onEnd` is called when the animation has settled. If the component receives props halfway through an animation, the animation is extended and `onEnd` will be called after the extended animation has ended.
 
 TransitionGroup
 ---
@@ -100,7 +103,7 @@ function BarChart({ users, ...props }) {
 
 In the above example, items fade in when added (animate from opacity 0) and fade out when removed (animate to opacity 0).
 
-You can also set easing and duration on `Tween.TransitionGroup`.
+You can also set easing, duration, and delay on `Tween.TransitionGroup`.
 
 ```javascript
 import { easeCubicInOut } from 'd3-ease';
@@ -108,8 +111,10 @@ import { easeCubicInOut } from 'd3-ease';
 function BarChart({ users, ...props }) {
   return (
     <Tween.TransitionGroup
-      easing={easeCubicInOut}
+      delay={1000}
       duration={500}
+      easing={easeCubicInOut}
+      onEnd={() => alert('Done!')}
       styles={/* ... */}
       {...props}
     >

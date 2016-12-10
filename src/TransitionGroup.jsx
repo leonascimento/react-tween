@@ -14,6 +14,7 @@ export default class TransitionGroup extends React.Component {
     duration: React.PropTypes.number,
     easing: React.PropTypes.func,
     group: React.PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    onEnd: React.PropTypes.func,
     styles: React.PropTypes.array, // eslint-disable-line react/forbid-prop-types
     willEnter: React.PropTypes.func, // eslint-disable-line react/no-unused-prop-types
     willLeave: React.PropTypes.func, // eslint-disable-line react/no-unused-prop-types
@@ -23,6 +24,7 @@ export default class TransitionGroup extends React.Component {
     delay: 0,
     duration: 500,
     easing: easeCubicInOut,
+    onEnd: () => {},
     willEnter: style => style.style,
     willLeave: style => style.style,
   };
@@ -109,14 +111,26 @@ export default class TransitionGroup extends React.Component {
     this.startTimer();
   }
 
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
   startTimer() {
     const { delay } = this.props;
 
     this.timer.restart(elapsed => this.update(elapsed), delay);
+    this.running = true;
   }
 
   stopTimer() {
+    const { onEnd } = this.props;
+
+    if (!this.running) {
+      return;
+    }
+
     this.timer.stop();
+    this.running = false;
 
     this.setState({
       styles: this.state.styles.map(style => ({
@@ -124,6 +138,8 @@ export default class TransitionGroup extends React.Component {
         currentStyle: style.endStyle,
       })),
     });
+
+    onEnd();
   }
 
   update(elapsed) {
