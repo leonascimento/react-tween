@@ -58,7 +58,6 @@ function BarChart({ color, ...props }) {
       easing={easeCubicInOut}
       delay={1000}
       duration={500}
-      onEnd={() => alert('Done!')}
       style={{ color }}
     >
       {/* ... */}
@@ -67,12 +66,10 @@ function BarChart({ color, ...props }) {
 }
 ```
 
-`onEnd` is called when the animation has settled. If the component receives props halfway through an animation, the animation is extended and `onEnd` will be called after the extended animation has ended.
-
 TransitionGroup
 ---
 
-If you want to animate items added or removed from a collection, you can use `Tween.TransitionGroup`.
+If you want to animate items added to or removed from a collection, you can use `Tween.TransitionGroup`.
 
 `Tween.TransitionGroup` accepts a list of styles instead of a single style. Each style has a key that is used to determine if a child has been added or removed (similar to React child keys).
 
@@ -114,7 +111,6 @@ function BarChart({ users, ...props }) {
       delay={1000}
       duration={500}
       easing={easeCubicInOut}
-      onEnd={() => alert('Done!')}
       styles={/* ... */}
       {...props}
     >
@@ -157,9 +153,30 @@ function LineChart({ requestCounter, ...props }) {
 function Chart({ requestCounter, ...props }) {
   return (
     <g {...props}>
-      <BarChart requestCounter={requestCounter} />
-      <LineChart requestCounter={requestCounter} />
+      <BarChart
+        requestCounter={requestCounter}
+      />
+      <LineChart
+        requestCounter={requestCounter}
+      />
     </g>
+  );
+}
+```
+
+Events
+---
+
+If you want to be notified when the animation is done, use `onEnd`. The end of the animation is pushed out if the component receives new props.
+
+```javascript
+function BarChart(props) {
+  return (
+    <Tween
+      onEnd={() => alert('Done!')}
+    >
+      {/* ... */}
+    </Tween>
   );
 }
 ```
