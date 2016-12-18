@@ -43,7 +43,7 @@ function Example({ color, ...props }) {
 }
 ```
 
-Animate items added to or removed from collections.
+Animate added or removed items with `Tween.TransitionGroup`.
 - In this example, the collection is a list of meetings.
 - When a meeting is added, it fades in (`willEnter`).
 - When a meeting is removed, it fades out (`willLeave`).
