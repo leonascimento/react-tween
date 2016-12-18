@@ -91,6 +91,31 @@ For `Tween.TransitionGroup`, each style is a `TransitionStyle`, which has the fo
 
 `willEnter` and `willLeave` are passed `TransitionStyle`s and should return plain style objects.
 
+Synchronizing animations
+---
+By default, `Tween`s animate whenever their styles change. If you want control over when animation begins, set the `group` prop. If the `group` prop is set, animation only begins when the value of this prop changes.
+
+```javascript
+function Example({ color1, color2, invalidationCounter, ...props }) {
+  return (
+    <div {...props}>
+      <Tween
+        group={invalidationCounter}
+        style={{ color: color1 }}
+      >
+        {/* ... */}
+      </Tween>
+      <Tween
+        group={invalidationCounter}
+        style={{ color: color2 }}
+      >
+        {/* ... */}
+      </Tween>
+    </div>
+  );
+}
+```
+
 Comparison to `react-motion`
 ---
 Choose `react-tween` or `react-motion` based on whether you want tween or spring animation.
