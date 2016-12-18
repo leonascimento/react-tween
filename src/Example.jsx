@@ -50,8 +50,8 @@ export default function Example({ className, ...props }) {
           return (
             <TransitionGroup
               styles={filteredStyles}
-              willEnter={style => ({ ...style, opacity: 0 })}
-              willLeave={style => ({ ...style, opacity: 0 })}
+              willEnter={style => ({ ...style.style, opacity: 0 })}
+              willLeave={style => ({ ...style.style, opacity: 0 })}
             >
               {interpolatedStyles => (
                 <div className={styles.row}>

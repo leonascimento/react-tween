@@ -4,40 +4,19 @@ Tween animation for React components
 
 [Demo](http://codepen.io/mking-clari/pen/XNYbJX)
 
-Tween
+Usage
 ---
-
-Let's say you have a bar chart. You want to animate the bar color from red to blue. What's the ideal API for this?
-
-Here's the unanimated component.
+Animate props with `Tween`.
 
 ```javascript
-function BarChart({ color, ...props }) {
-  return (
-    <rect
-      fill={color}
-      height={100}
-      width={30}
-      {...props}
-    />
-  );
-}
-```
-
-Now let's animate the color prop with `react-tween`. To do this, wrap the original component with a `Tween`.
-
-```javascript
-function BarChart({ color, ...props }) {
+function Example({ color, ...props }) {
   return (
     <Tween
       style={{ color }}
     >
       {style => (
-        <rect
-          fill={style.color}
-          height={100}
-          width={30}
-          {...props}
+        <div
+          style={{ backgroundColor: style.color }}
         />
       )}
     </Tween>
@@ -45,14 +24,12 @@ function BarChart({ color, ...props }) {
 }
 ```
 
-When the color prop is set to blue, the rect color is animated from its previous color to blue.
-
-If you want to customize easing, duration, or delay, you can pass additional options.
+Customize easing, duration, and delay.
 
 ```javascript
 import { easeCubicInOut } from 'd3-ease';
 
-function BarChart({ color, ...props }) {
+function Example({ color, ...props }) {
   return (
     <Tween
       easing={easeCubicInOut}
@@ -66,111 +43,61 @@ function BarChart({ color, ...props }) {
 }
 ```
 
-TransitionGroup
----
-
-If you want to animate items added to or removed from a collection, you can use `Tween.TransitionGroup`.
-
-`Tween.TransitionGroup` accepts a list of styles instead of a single style. Each style has a key that is used to determine if a child has been added or removed (similar to React child keys).
+Animate items added to or removed from collections.
+- In this example, the collection is a list of meetings.
+- When a meeting is added, it fades in (`willEnter`).
+- When a meeting is removed, it fades out (`willLeave`).
 
 ```javascript
-function BarChart({ users, ...props }) {
+function Example({ meetings, ...props }) {
   return (
     <Tween.TransitionGroup
-      styles={users.map(user => ({
-        key: user.id,
+      styles={meetings.map(meeting => ({
+        key: meeting.id,
         style: {
           opacity: 1,
         },
-        data: user,
+        data: meeting,
       }))}
-      willEnter={style => ({ ...style, opacity: 0 })}
-      willLeave={style => ({ ...style, opacity: 0 })}
+      willEnter={style => ({ ...style.style, opacity: 0 })}
+      willLeave={style => ({ ...style.style, opacity: 0 })}
     >
-      {styles => styles.map(style => (
-        <rect
-          key={style.key}
-          style={{ opacity: style.style.opacity }}
-        />
-      ))}
+      {styles => (
+        <div>
+          {styles.map(style => (
+            <div
+              key={style.key}
+              style={{ opacity: style.style.opacity }}
+            >
+              {style.data.title}
+            </div>
+          ))}
+        </div>
+      )}
     </Tween.TransitionGroup>
   );
 }
 ```
 
-In the above example, items fade in when added (animate from opacity 0) and fade out when removed (animate to opacity 0).
-
-You can also set easing, duration, and delay on `Tween.TransitionGroup`.
+For `Tween.TransitionGroup`, each style is a `TransitionStyle`, which has the following format.
 
 ```javascript
-import { easeCubicInOut } from 'd3-ease';
-
-function BarChart({ users, ...props }) {
-  return (
-    <Tween.TransitionGroup
-      delay={1000}
-      duration={500}
-      easing={easeCubicInOut}
-      styles={/* ... */}
-      {...props}
-    >
-      {/* ... */}
-    </Tween.TransitionGroup>
-  );
+{
+  key, // string identifying which item is added or removed when the collection changes
+  style: { ... }, // plain style object, same format as the style for `Tween`
+  data, // arbitrary data, normally a domain object that is used to display non-animated data
 }
 ```
 
-Synchronizing Animations
----
-
-Let's say you have animations in two separate parts of the component tree and you want to kick them off simultaneously. You can do this with the `group` prop. All animations with the same `group` prop start animating at the same time.
-
-```javascript
-function BarChart({ requestCounter, ...props }) {
-  return (
-    <Tween.TransitionGroup
-      group={requestCounter}
-      styles={/* ... */}
-      {...props}
-    >
-      {/* ... */}
-    </Tween.TransitionGroup>
-  );
-}
-
-function LineChart({ requestCounter, ...props }) {
-  return (
-    <Tween.TransitionGroup
-      group={requestCounter}
-      styles={/* ... */}
-      {...props}
-    >
-      {/* ... */}
-    </Tween.TransitionGroup>
-  );
-}
-
-function Chart({ requestCounter, ...props }) {
-  return (
-    <g {...props}>
-      <BarChart
-        requestCounter={requestCounter}
-      />
-      <LineChart
-        requestCounter={requestCounter}
-      />
-    </g>
-  );
-}
-```
+`willEnter` and `willLeave` are passed `TransitionStyle`s and return plain style objects.
 
 Events
 ---
 
-If you want to be notified when the animation is done, use `onEnd`. The end of the animation is pushed out if the component receives new props.
+To sequence animations, use `onEnd`.
 
 ```javascript
-function BarChart(props) {
+function Example(props) {
   return (
     <Tween
       onEnd={() => alert('Done!')}
@@ -184,8 +111,8 @@ function BarChart(props) {
 Comparison to `react-motion`
 ---
 Choose `react-tween` or `react-motion` based on whether you want tween or spring animation.
-- If you need natural, physical motion, use spring animation.
-- If you need to specify a duration, or you do not want a bounce, use tween animation.
+- If you want natural, physical motion, use spring animation.
+- If you want to specify a duration, or you do not want a bounce, use tween animation.
 
 Setup
 ---

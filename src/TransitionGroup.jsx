@@ -29,6 +29,14 @@ export default class TransitionGroup extends React.Component {
     willLeave: style => style.style,
   };
 
+  static getTransitionStyle(style) {
+    return {
+      key: style.key,
+      style: style.currentStyle,
+      data: style.data,
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -83,7 +91,7 @@ export default class TransitionGroup extends React.Component {
         };
       } else if (Object.prototype.hasOwnProperty.call(oldStyles, key)) {
         // removed key case
-        const leaveStyle = nextProps.willLeave(oldStyles[key].currentStyle);
+        const leaveStyle = nextProps.willLeave(TransitionGroup.getTransitionStyle(oldStyles[key]));
 
         return {
           key,
@@ -94,7 +102,7 @@ export default class TransitionGroup extends React.Component {
         };
       } else { // eslint-disable-line no-else-return
         // added key case
-        const enterStyle = nextProps.willEnter(newStyles[key].style);
+        const enterStyle = nextProps.willEnter(newStyles[key]);
 
         return {
           key,
@@ -163,11 +171,7 @@ export default class TransitionGroup extends React.Component {
   render() {
     const { children } = this.props;
 
-    const styles = this.state.styles.map(style => ({
-      key: style.key,
-      style: style.currentStyle,
-      data: style.data,
-    }));
+    const styles = this.state.styles.map(style => TransitionGroup.getTransitionStyle(style));
 
     return children(styles);
   }
