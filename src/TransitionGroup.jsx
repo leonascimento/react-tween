@@ -171,7 +171,7 @@ export default class TransitionGroup extends React.Component {
   render() {
     const { children } = this.props;
 
-    const styles = this.state.styles.map(style => TransitionGroup.getTransitionStyle(style));
+    const styles = this.state.styles.map(TransitionGroup.getTransitionStyle);
 
     return children(styles);
   }
