@@ -89,7 +89,7 @@ For `Tween.TransitionGroup`, each style is a `TransitionStyle`, which has the fo
 }
 ```
 
-`willEnter` and `willLeave` are passed `TransitionStyle`s and return plain style objects.
+`willEnter` and `willLeave` are passed `TransitionStyle`s and should return plain style objects.
 
 Events
 ---
