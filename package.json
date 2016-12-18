@@ -1,6 +1,6 @@
 {
   "name": "react-tween",
-  "version": "0.4.0-alpha.14",
+  "version": "0.4.0-alpha.15",
   "description": "Tween animation for React components",
   "repository": "clari/react-tween",
   "license": "MIT",
