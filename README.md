@@ -93,7 +93,7 @@ For `Tween.TransitionGroup`, each style is a `TransitionStyle`, which has the fo
 
 Synchronizing animations
 ---
-By default, `Tween`s animate whenever their styles change. If you want control over when animation begins, set the `group` prop. If the `group` prop is set, animation only begins when the value of this prop changes.
+By default, `Tween`s animate whenever their styles change. If you want control over when animation begins, set the `group` prop. If the `group` prop is set, animation only begins when the value of this prop changes. `group` is essentially a logical grouping of animations that should run together.
 
 ```javascript
 function Example({ color1, color2, invalidationCounter, ...props }) {
