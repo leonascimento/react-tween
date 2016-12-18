@@ -83,30 +83,13 @@ For `Tween.TransitionGroup`, each style is a `TransitionStyle`, which has the fo
 
 ```javascript
 {
-  key, // string identifying which item is added or removed when the collection changes
-  style: { ... }, // plain style object, same format as the style for `Tween`
-  data, // arbitrary data, normally a domain object that is used to display non-animated data
+  key, // item id
+  style: { ... }, // plain style object (same format as style for `Tween`)
+  data, // item data
 }
 ```
 
 `willEnter` and `willLeave` are passed `TransitionStyle`s and should return plain style objects.
-
-Events
----
-
-To sequence animations, use `onEnd`.
-
-```javascript
-function Example(props) {
-  return (
-    <Tween
-      onEnd={() => alert('Done!')}
-    >
-      {/* ... */}
-    </Tween>
-  );
-}
-```
 
 Comparison to `react-motion`
 ---
