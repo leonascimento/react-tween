@@ -17,6 +17,7 @@ export default class TransitionGroup extends React.Component {
     styles: React.PropTypes.array, // eslint-disable-line react/forbid-prop-types
     willEnter: React.PropTypes.func, // eslint-disable-line react/no-unused-prop-types
     willLeave: React.PropTypes.func, // eslint-disable-line react/no-unused-prop-types
+    onFinished: React.PropTypes.func // eslint-disable-line react/no-unused-prop-types
   };
 
   static defaultProps = {
@@ -151,6 +152,9 @@ export default class TransitionGroup extends React.Component {
     const easedTime = easing(t);
     if (easedTime > 0.99) {
       this.stopTimer();
+      if (this.props.onFinished) {
+        this.props.onFinished();
+      }
       return;
     }
 
